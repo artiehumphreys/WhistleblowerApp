@@ -66,7 +66,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'whistleblower'
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
