@@ -66,7 +66,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-LOGIN_REDIRECT_URL = 'whistleblower'
+LOGIN_REDIRECT_URL = '/profile'
 
 
 MIDDLEWARE = [

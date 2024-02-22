@@ -3,8 +3,8 @@ from django.contrib.auth import logout
 from django.contrib import messages
 
 
-def login(request):
-    return render(request, "login.html")
+def profile(request):
+    return render(request, "profile.html")
 
 def logout_view(request):
     logout(request)
