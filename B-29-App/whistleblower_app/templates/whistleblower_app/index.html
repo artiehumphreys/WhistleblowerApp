@@ -1,6 +1,17 @@
 <div id="homepage">
     <h2>Login Page</h2>
-    <button>
-        Login with Google
-    </button>
+
+    <body>
+        {% load socialaccount %}
+        <h2>Google Login</h2>
+        <a href="{% provider_login_url 'google' %}?next=/">
+            <button>Login with Google</button>
+        </a>
+
+        {% if user.is_authenticated %}
+        <p>You are signed in as {{user.email}}</p>
+        <a href="logout">Logout</a>
+        {% endif %}
+
+    </body>
 </div>

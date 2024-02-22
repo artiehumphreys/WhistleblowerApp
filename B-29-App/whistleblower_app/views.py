@@ -5,3 +5,5 @@ from django.template import loader
 
 def index(request):
     return render(request, "whistleblower_app/index.html")
+
+
