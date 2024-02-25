@@ -15,4 +15,4 @@ def logout_view(request):
     return redirect("/whistleblower/")
 
 def test(request):
-    return HttpResponse ("<h1> Is this working</h1>")
+    return redirect("/whistleblower/")
