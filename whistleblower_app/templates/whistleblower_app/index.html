@@ -1,0 +1,10 @@
+<div id="homepage">
+    <h2>Login Page</h2>
+
+    <body>
+        {% load socialaccount %}
+        <h2>Google Login</h2>
+        <a href="{% provider_login_url 'google' %}?next=/profile">
+            <button>Login with Google</button>
+        </a>
+</div>

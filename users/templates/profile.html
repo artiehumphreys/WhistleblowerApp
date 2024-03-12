@@ -1,0 +1,12 @@
+{% load socialaccount %}
+{% block content %}
+{% if user.is_authenticated %}
+<p>You are signed in as {{user.username}}</p>
+<p>Welcome, {{user.get_full_name}}</p>
+<a href="logout">
+    <button>Logout</button>
+</a>
+{% endif %}
+
+</body>
+{% endblock content %}
