@@ -1,10 +1,17 @@
+{% load bootstrap5 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 <div id="homepage">
-    <h2>Login Page</h2>
+    <h2 style="align-items: center;">Welcome to the Bullying Whistleblower App</h2>
 
     <body>
         {% load socialaccount %}
         <h2>Google Login</h2>
         <a href="{% provider_login_url 'google' %}?next=/profile">
-            <button>Login with Google</button>
+            <button>
+                <i class="bi bi-person-circle"></i>
+                Login
+            </button>
         </a>
 </div>
