@@ -1,17 +1,50 @@
+{% load socialaccount %}
 {% load bootstrap5 %}
-
 {% bootstrap_css %}
 {% bootstrap_javascript %}
-<div id="homepage">
-    <h2 style="align-items: center;">Welcome to the Bullying Whistleblower App</h2>
 
-    <body>
-        {% load socialaccount %}
-        <h2>Google Login</h2>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css">
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Welcome to the Bullying Whistleblower App</h1>
         <a href="{% provider_login_url 'google' %}?next=/profile">
-            <button>
-                <i class="bi bi-person-circle"></i>
-                Login
-            </button>
+            <i class="bi bi-person-circle"></i> Login
         </a>
+    </div>
+
+    <!-- Report Button -->
+    <div class="text-center mt-4">
+        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">
+            Report an Issue
+        </button>
+    </div>
+</div>
+
+<!-- Report Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="fileUpload" class="form-label">Upload evidence</label>
+                        <input class="form-control" type="file" id="fileUpload" accept=".txt, .pdf, .jpg">
+                    </div>
+                    <div class="mb-3">
+                        <label for="descriptionText" class="form-label">Description</label>
+                        <textarea class="form-control" id="descriptionText" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Submit Report</button>
+            </div>
+        </div>
+    </div>
 </div>
