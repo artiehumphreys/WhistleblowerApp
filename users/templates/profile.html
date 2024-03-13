@@ -1,16 +1,9 @@
 {% extends 'base.html' %}
 {% load socialaccount %}
-{% if user.is_authenticated %}
-{% block title %}User Profile - {{ user.username }}{% endblock title %}
-{% block content %}
-{% block header %}
-<h1>User Profile - {{ user.username }}</h1>
-{% endblock header %}
-<p>Welcome, {{user.get_full_name}}</p>
-<a href="logout">
-    <button>Logout</button>
-</a>
 
-</body>
-{% endblock content %}
+{% if user.is_authenticated %}
+    {% block title %}Hi, {{ user.username }}{% endblock title %}
+    {% block header %}
+        <h1>Hi, {{ user.username }}</h1>
+    {% endblock header %}
 {% endif %}

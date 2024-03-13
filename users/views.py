@@ -8,7 +8,7 @@ def profile(request):
     if request.user.groups.filter(name="Site Admin").exists():
         return render(request, "siteadmin.html")
     else:
-        return render(request, "profile.html")
+        return render(request, "profile.html", {'user': request.user})
 
 def logout_view(request):
     logout(request)
