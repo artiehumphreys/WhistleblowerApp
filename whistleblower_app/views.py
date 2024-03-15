@@ -16,7 +16,7 @@ def file_upload_view(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('success_url')  # Redirect to a new URL
+            return render(request, "whistleblower_app/file_upload.html")
     else:
         form = UploadFileForm()
-    return render(request, 'your_template.html', {'form': form})
+    # return render(request, 'your_template.html', {'form': form})
