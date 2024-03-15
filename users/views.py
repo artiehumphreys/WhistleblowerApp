@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 def profile(request):
+    if(request.user.is_authenticated == False):
+        return redirect("/whistleblower/")
     if request.user.groups.filter(name="Site Admin").exists():
         return render(request, "siteadmin.html")
     else:
