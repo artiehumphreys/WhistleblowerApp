@@ -3,8 +3,8 @@
 <h2>Here's a list of all of the submitted files by users:</h2>
 <ul>
     {% for file in files %}
-    <li>
-        <a href="{{ file.file.url }}" target="_blank">{{ file.title }}</a>
-    </li>
+    <ul>
+        <iframe src="{{ file.file.url }}" width="35%" height="35%" target="_blank">{{ file.title }}</iframe>
+    </ul>
     {% endfor %}
 </ul>
