@@ -3,10 +3,12 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from whistleblower_app.models import UploadedFile
 
 def profile(request):
     if request.user.groups.filter(name="Site Admin").exists():
-        return render(request, "siteadmin.html")
+        files = UploadedFile.objects.all()
+        return render(request, "siteadmin.html", {'files': files})
     else:
         return render(request, "profile.html")
 
