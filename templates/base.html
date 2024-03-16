@@ -62,14 +62,14 @@
                 <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="fileUpload" class="form-label">Upload File</label>
                         <input class="form-control" type="file" id="fileUpload" name="file" accept=".txt, .pdf, .jpg">
                     </div>
                     <div class="mb-3">
                         <label for="descriptionText" class="form-label">Description</label>
                         <textarea class="form-control" id="descriptionText" name="description" rows="3"></textarea>
-                    </div>
+                    </div> -->
                     <button type="submit" class="btn btn-primary">Submit Report</button>
                 </form>
             </div>

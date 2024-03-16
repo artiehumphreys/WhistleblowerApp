@@ -4,7 +4,8 @@
 <ul>
     {% for file in files %}
     <ul>
-        <iframe src="{{ file.file.url }}" width="35%" height="35%" target="_blank">{{ file.title }}</iframe>
+        <object data="{{ file.file.url }}" width="35%" height="35%" target="_blank">{{ file.title
+            }}</object>
     </ul>
     {% endfor %}
 </ul>
