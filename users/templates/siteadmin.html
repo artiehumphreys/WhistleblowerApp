@@ -1,11 +1,55 @@
 {% load socialaccount %}
 <h2>Welcome to the site admin page.</h2>
 <h2>Here's a list of all of the submitted files by users:</h2>
-<ul>
-    {% for file in files %}
-    <ul>
-        <object data="{{ file.file.url }}" width="35%" height="35%" target="_blank">{{ file.title
-            }}</object>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- Include jQuery and Bootstrap Bundle JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<style>
+    .file-preview {
+        width: 35%;
+        /* Adjust as necessary */
+        height: auto;
+        /* Adjust as necessary */
+    }
+
+    .file-description {
+        margin-right: 15px;
+    }
+
+    .file-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+</head>
+<div class="container mt-3">
+    <ul class="list-unstyled">
+        {% for file in files %}
+        <li class="mb-2">
+            <a class="btn btn-secondary dropdown-toggle w-100 text-start" href="#" role="button"
+                id="dropdownMenuLink{{ forloop.counter }}" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ file.title }}
+            </a>
+
+            <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuLink{{ forloop.counter }}">
+                <li>
+                    <div class="d-flex">
+                        <div class="flex-grow-1">
+                            <h6 class="dropdown-header">{{ file.title }}</h6>
+                            <p class="ms-3">{{ file.description }}</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <object data="{{ file.file.url }}" width="100" height="100" type="application/pdf">
+                                <a href="{{ file.file.url }}">Download File</a>
+                            </object>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
+        {% endfor %}
     </ul>
-    {% endfor %}
-</ul>
+</div>
