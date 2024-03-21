@@ -7,49 +7,80 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <style>
-    .file-preview {
-        width: 35%;
-        /* Adjust as necessary */
-        height: auto;
-        /* Adjust as necessary */
+    .dropdown-container {
+        margin-bottom: 10px;
     }
 
-    .file-description {
-        margin-right: 15px;
+    .dropdown-title {
+        cursor: pointer;
+        padding: 5px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
     }
 
-    .file-info {
+    .dropdown-content {
+        display: none;
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+
+    .dropdown-content-inner {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        padding: 10px;
+    }
+
+    .dropdown-content-inner .file-info {
+        flex-grow: 1;
+    }
+
+    .dropdown-content-inner .file-info h4 {
+        margin: 0 0 5px 0;
+    }
+
+    .dropdown-content-inner .file-display {
+        flex-shrink: 0;
+        margin-left: 10px;
+    }
+
+    .dropdown-content-inner .file-display object {
+        width: 100px;
+        /* Adjust as needed */
+        height: auto;
     }
 </style>
-</head>
-<div class="container mt-3">
-    <ul class="list-unstyled">
-        {% for file in files %}
-        <li class="mb-2">
-            <a class="btn btn-secondary dropdown-toggle w-100 text-start" href="#" role="button"
-                id="dropdownMenuLink{{ forloop.counter }}" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ file.title }}
-            </a>
 
-            <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuLink{{ forloop.counter }}">
-                <li>
-                    <div class="d-flex">
-                        <div class="flex-grow-1">
-                            <h6 class="dropdown-header">{{ file.title }}</h6>
-                            <p class="ms-3">{{ file.description }}</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <object data="{{ file.file.url }}" width="100" height="100" type="application/pdf">
-                                <a href="{{ file.file.url }}">Download File</a>
-                            </object>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </li>
-        {% endfor %}
-    </ul>
-</div>
+<ul>
+    {% for file in files %}
+    <li class="dropdown-container">
+        <div class="dropdown-title" onclick="toggleDropdown(this)">
+            {{ file.title }}
+        </div>
+        <div class="dropdown-content">
+            <div class="dropdown-content-inner">
+                <div class="file-info">
+                    <h4>{{ file.title }}</h4>
+                    <p>{{ file.description }}</p>
+                </div>
+                <div class="file-display">
+                    <object data="{{ file.file.url }}" type="application/pdf" width="100%" height="200px">
+                        <a href="{{ file.file.url }}" target="_blank">Download {{ file.title }}</a>
+                    </object>
+                </div>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+
+<script>
+    // Simple JavaScript to toggle dropdowns
+    function toggleDropdown(element) {
+        const content = element.nextElementSibling;
+        if (content.style.display === 'block') {
+            content.style.display = 'none';
+        } else {
+            content.style.display = 'block';
+        }
+    }
+</script>
