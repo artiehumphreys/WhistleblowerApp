@@ -4,10 +4,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from whistleblower_app.models import UploadedFile
+from whistleblower_app.views import file_upload_view
+import boto3
+from django.conf import settings
 
 def profile(request):
     if request.user.groups.filter(name="Site Admin").exists():
-        files = UploadedFile.objects.all()
+        files = list_files
         return render(request, "siteadmin.html", {'files': files})
     else:
         return render(request, "profile.html")
@@ -18,3 +21,12 @@ def logout_view(request):
 
 def test(request):
     return redirect("/whistleblower/")
+
+def list_files():
+    s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+    response = s3.list_objects_v2(Bucket='b29-whistleblower')
+
+    files = []
+    if 'Contents' in response:
+        files = [{'name': item['Key']} for item in response['Contents']]
+    return files
