@@ -44,8 +44,7 @@
     }
 
     .dropdown-content-inner .file-display object {
-        width: 100px;
-        /* Adjust as needed */
+        width: auto;
         height: auto;
     }
 </style>
@@ -54,18 +53,31 @@
     {% for file in files %}
     <li class="dropdown-container">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
-            {{ file.title }}
+            {{ file.name }}
         </div>
         <div class="dropdown-content">
             <div class="dropdown-content-inner">
                 <div class="file-info">
-                    <h4>{{ file.title }}</h4>
-                    <p>{{ file.description }}</p>
+                    <h4>{{ file.name }}</h4>
+                    <p>No description available.</p>
                 </div>
                 <div class="file-display">
-                    <object data="{{ file.file.url }}" type="application/pdf" width="100%" height="200px">
-                        <a href="{{ file.file.url }}" target="_blank">Download {{ file.title }}</a>
+                    {% if 'pdf' in file.name|lower %}
+                    <object data="https://s3.amazonaws.com/b29-whistleblower/{{ file.name }}" type="application/pdf"
+                        width="150%" height="150%">
+                        <a href="https://s3.amazonaws.com/b29-whistleblower/{{ file.name }}" target="_blank">View
+                            PDF</a>
                     </object>
+                    {% elif '.jpg' in file.name|lower %}
+                    <img src="https://s3.amazonaws.com/b29-whistleblower/{{ file.name }}"
+                        style="width: 60%; height: auto; max-width: 600px;">
+                    {% elif '.txt' in file.name|lower %}
+                    <iframe src="https://s3.amazonaws.com/b29-whistleblower/{{ file.name }}"
+                        style="width: 75%; height: 500px;"></iframe>
+                    {% else %}
+                    <a href="https://s3.amazonaws.com/b29-whistleblower/{{ file.name }}" target="_blank">Download
+                        File</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -74,7 +86,7 @@
 </ul>
 
 <script>
-    // Simple JavaScript to toggle dropdowns
+    // JavaScript for dropdown functionality
     function toggleDropdown(element) {
         const content = element.nextElementSibling;
         if (content.style.display === 'block') {
