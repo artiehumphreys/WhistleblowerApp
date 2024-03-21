@@ -13,7 +13,6 @@ def profile(request):
         files = []
         if 'Contents' in response:
             files = [{'name': item['Key']} for item in response['Contents']]
-        print(response)
         return render(request, "siteadmin.html", {'files': files})
     else:
         return render(request, "profile.html")

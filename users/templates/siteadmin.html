@@ -49,7 +49,7 @@
     }
 </style>
 
-<ul>
+<ul style="list-style-type:none;">
     {% for file in files %}
     <li class="dropdown-container">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
@@ -59,6 +59,7 @@
             <div class="dropdown-content-inner">
                 <div class="file-info">
                     <h4>{{ file.name }}</h4>
+                    <p>{{ file.users }}</p>
                     <p>No description available.</p>
                 </div>
                 <div class="file-display">
