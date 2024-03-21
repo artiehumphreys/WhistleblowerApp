@@ -59,14 +59,14 @@
             <div class="dropdown-content-inner">
                 <div class="file-info">
                     <h4>{{ file.name }}</h4>
-                    <p>{{ file.users }}</p>
-                    <p>No description available.</p>
+                    <p>{{ file.username }}</p>
+                    <p>{{ file.description }}</p>
                 </div>
                 <div class="file-display">
                     {% if 'pdf' in file.name|lower %}
-                    <object data="https://s3.amazonaws.com/b29-whistleblower/{{ file.name }}" type="application/pdf"
-                        width="150%" height="150%">
-                        <a href="https://s3.amazonaws.com/b29-whistleblower/{{ file.name }}" target="_blank">View
+                    <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.name }}"
+                        type="application/pdf" width="150%" height="150%">
+                        <a href="https://s3.amazonaws.com/b29-whistleblower/uploads{{ file.name }}" target="_blank">View
                             PDF</a>
                     </object>
                     {% elif '.jpg' in file.name|lower %}
