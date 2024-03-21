@@ -11,17 +11,19 @@ def profile(request):
         s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
         response = s3.list_objects_v2(Bucket='b29-whistleblower')
         files = []
-        print(response)
         if 'Contents' in response:
             for item in response['Contents']:
                 file_key = item['Key']
+                url = str(file_key).replace(' ', '_')
                 metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
                 metadata = metadata_response.get('Metadata', {})
                 files.append({
+                    'url': url,
                     'name': file_key,
                     'username': metadata.get('username', 'No User Data Available'),
                     'description': metadata.get('description', 'No Description Available.')
                 })
+                print(files)
 
         return render(request, "siteadmin.html", {'files': files})
     else:
