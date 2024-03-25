@@ -17,13 +17,14 @@ def profile(request):
                 url = str(file_key).replace(' ', '_')
                 metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
                 metadata = metadata_response.get('Metadata', {})
-                files.append({
-                    'url': url,
-                    'name': file_key,
-                    'username': metadata.get('username', 'No User Data Available'),
-                    'description': metadata.get('description', 'No Description Available.')
-                })
-                print(files)
+                print (file_key)
+                if not "uploads/" in file_key:
+                    files.append({
+                        'url': url,
+                        'name': metadata.get('title', file_key),
+                        'username': metadata.get('username', 'No User Data Available'),
+                        'description': metadata.get('description', 'No Description Available.'),
+                    })
 
         return render(request, "siteadmin.html", {'files': files})
     else:
