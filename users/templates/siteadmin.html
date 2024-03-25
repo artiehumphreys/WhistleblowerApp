@@ -58,9 +58,10 @@
         <div class="dropdown-content">
             <div class="dropdown-content-inner">
                 <div class="file-info">
-                    <h4>{{ file.name }}</h4>
-                    <p>{{ file.username }}</p>
-                    <p>{{ file.description }}</p>
+                    <h4>File Name: {{ file.name }}</h4>
+                    <p>Uploaded By: {{ file.username }}</p>
+                    <p>Description: {{ file.description }}</p>
+                    <p>Status: {{ file.status }}</p>
                 </div>
                 <div class="file-display">
                     {% if 'pdf' in file.url|lower %}

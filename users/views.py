@@ -24,6 +24,7 @@ def profile(request):
                         'name': metadata.get('title', file_key),
                         'username': metadata.get('username', 'No User Data Available'),
                         'description': metadata.get('description', 'No Description Available.'),
+                        'status': metadata.get('status', 'In Progress')
                     })
 
         return render(request, "siteadmin.html", {'files': files})
