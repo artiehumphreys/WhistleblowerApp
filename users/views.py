@@ -7,28 +7,32 @@ import boto3
 from django.conf import settings
 
 def profile(request):
-    if request.user.groups.filter(name="Site Admin").exists():
-        s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-        response = s3.list_objects_v2(Bucket='b29-whistleblower')
-        files = []
-        if 'Contents' in response:
-            for item in response['Contents']:
-                file_key = item['Key']
-                url = str(file_key).replace(' ', '_')
-                metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
-                metadata = metadata_response.get('Metadata', {})
-                if not "uploads/" in file_key:
-                    files.append({
-                        'url': url,
-                        'name': metadata.get('title', file_key),
-                        'username': metadata.get('username', 'No User Data Available'),
-                        'description': metadata.get('description', 'No Description Available.'),
-                        'status': metadata.get('status', 'In Progress')
-                    })
+    s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+    response = s3.list_objects_v2(Bucket='b29-whistleblower')
+    files = []
+    is_site_admin = request.user.groups.filter(name="Site Admin").exists()  # Check once before the loop
 
+    if 'Contents' in response:
+        for item in response['Contents']:
+            file_key = item['Key']
+            if "uploads/" in file_key:
+                continue
+            url = str(file_key).replace(' ', '_')
+            metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
+            metadata = metadata_response.get('Metadata', {})
+            if is_site_admin or request.user.username == metadata.get('username'):
+                files.append({
+                    'url': url,
+                    'name': metadata.get('title', file_key),
+                    'username': metadata.get('username', 'No User Data Available'),
+                    'description': metadata.get('description', 'No Description Available.'),
+                    'status': metadata.get('status', 'In Progress')
+                })
+    print(files)
+    if is_site_admin:
         return render(request, "siteadmin.html", {'files': files})
     else:
-        return render(request, "profile.html")
+        return render(request, "profile.html", {'files': files})
 
 def logout_view(request):
     logout(request)
