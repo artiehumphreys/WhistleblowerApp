@@ -64,7 +64,7 @@
                     <p>Status: {{ file.status }}</p>
                 </div>
                 <div class="file-display">
-                    {% if 'pdf' in file.url|lower %}
+                    {% if '.pdf' in file.url|lower %}
                     <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
                         type="application/pdf" width="150%" height="150%">
                         <a href="https://s3.amazonaws.com/b29-whistleblower/uploads{{ file.url }}" target="_blank">View

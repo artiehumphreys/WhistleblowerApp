@@ -13,9 +13,11 @@
         {% block header %}
         <h1>Welcome to the Bullying Whistleblower App</h1>
         {% endblock header %}
+        {% if not user.is_authenticated %}
         <a href="{% provider_login_url 'google' %}?next=/profile">
             <i class="bi bi-person-circle"></i> Login
         </a>
+        {% endif %}
     </div>
 
     {% block content %}

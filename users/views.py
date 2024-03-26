@@ -17,7 +17,6 @@ def profile(request):
                 url = str(file_key).replace(' ', '_')
                 metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
                 metadata = metadata_response.get('Metadata', {})
-                print (file_key)
                 if not "uploads/" in file_key:
                     files.append({
                         'url': url,
