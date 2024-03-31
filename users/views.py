@@ -42,10 +42,11 @@ def profile(request):
 def change_file_status(request):
     file_name = request.POST.get('fileName')
     new_status = request.POST.get('newStatus')
-    
+    print(file_name)
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     try:
-        response = s3.head_object(Bucket='your-bucket-name', Key=file_name)
+        response = s3.head_object(Bucket='b29-whistleblower', Key=file_name)
+        
     except ClientError as e:
         error_code = e.response['Error']['Code']
         error_message = e.response['Error']['Message']

@@ -51,7 +51,7 @@
 
 <ul style="list-style-type:none;">
     {% for file in files %}
-    <li class="dropdown-container" onclick="changeStatus('{{ file.name }}')">
+    <li class="dropdown-container" onclick="changeStatus('{{ file.url }}')">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
             {{ file.name }}
         </div>
