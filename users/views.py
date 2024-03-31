@@ -46,7 +46,9 @@ def change_file_status(request):
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     try:
         response = s3.head_object(Bucket='b29-whistleblower', Key=file_name)
-        
+        metadata = response.get('Metadata', {})
+        metadata['status'] = new_status
+        s3.copy_object(Bucket='b29-whistleblower', CopySource={'Bucket': 'b29-whistleblower', 'Key': file_name}, Key=file_name, Metadata=metadata, MetadataDirective='REPLACE')
     except ClientError as e:
         error_code = e.response['Error']['Code']
         error_message = e.response['Error']['Message']
