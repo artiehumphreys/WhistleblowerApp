@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import boto3
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 def profile(request):
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
@@ -33,6 +35,23 @@ def profile(request):
         return render(request, "siteadmin.html", {'files': files})
     else:
         return render(request, "profile.html", {'files': files})
+    
+@csrf_exempt
+@require_http_methods(["POST"])
+def change_file_status(request):
+    print(
+        'hi'
+    )
+    file_name = request.POST.get('fileName')
+    new_status = request.POST.get('newStatus')
+
+    s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+    response = s3.head_object(Bucket='YOUR_BUCKET_NAME', Key=file_name)
+    metadata = response.get('Metadata', {})
+    metadata['status'] = new_status
+    s3.copy_object(Bucket='b29-whistleblower', CopySource={'Bucket': 'b29-whistleblower', 'Key': file_name}, Key=file_name, Metadata=metadata, MetadataDirective='REPLACE')
+
+    return JsonResponse({"message": "Status updated successfully"})
 
 def logout_view(request):
     logout(request)
