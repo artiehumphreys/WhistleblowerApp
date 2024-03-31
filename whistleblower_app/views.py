@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from .forms import UploadFileForm
 from .models import UploadedFile
 import boto3
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 
 def index(request):
@@ -34,3 +36,17 @@ def file_upload_view(request):
     else:
         form = UploadFileForm()
     return render(request, "whistleblower_app/file_upload.html", {'form': form})
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def change_file_status(request):
+    file_name = request.POST.get('fileName')
+    new_status = request.POST.get('newStatus')
+
+    s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+    response = s3.head_object(Bucket='YOUR_BUCKET_NAME', Key=file_name)
+    metadata = response.get('Metadata', {})
+    metadata['status'] = new_status
+    s3.copy_object(Bucket='b29-whistleblower', CopySource={'Bucket': 'b29-whistleblower', 'Key': file_name}, Key=file_name, Metadata=metadata, MetadataDirective='REPLACE')
+
+    return JsonResponse({"message": "Status updated successfully"})
