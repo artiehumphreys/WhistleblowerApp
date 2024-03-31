@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import boto3
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from botocore.exceptions import ClientError
 
 def profile(request):
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
@@ -39,19 +40,17 @@ def profile(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def change_file_status(request):
-    print(
-        'hi'
-    )
     file_name = request.POST.get('fileName')
     new_status = request.POST.get('newStatus')
-
+    
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-    response = s3.head_object(Bucket='YOUR_BUCKET_NAME', Key=file_name)
-    metadata = response.get('Metadata', {})
-    metadata['status'] = new_status
-    s3.copy_object(Bucket='b29-whistleblower', CopySource={'Bucket': 'b29-whistleblower', 'Key': file_name}, Key=file_name, Metadata=metadata, MetadataDirective='REPLACE')
-
-    return JsonResponse({"message": "Status updated successfully"})
+    try:
+        response = s3.head_object(Bucket='your-bucket-name', Key=file_name)
+    except ClientError as e:
+        error_code = e.response['Error']['Code']
+        error_message = e.response['Error']['Message']
+        print(f"Error code: {error_code}, Message: {error_message}")
+    return JsonResponse({'message': 'Status updated successfully'})
 
 def logout_view(request):
     logout(request)

@@ -100,7 +100,7 @@
     function changeStatus(fileName) {
         console.log($);
         $.ajax({
-            url: 'ajax/change_status',
+            url: '/profile/ajax/change_status/',
             type: 'POST',
             data: {
                 'fileName': fileName,
