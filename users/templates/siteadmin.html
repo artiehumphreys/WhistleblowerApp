@@ -51,7 +51,7 @@
 
 <ul style="list-style-type:none;">
     {% for file in files %}
-    <li class="dropdown-container" onclick="changeStatus('{{ file.url }}')">
+    <li class="dropdown-container" onclick="changeStatus('{{ file.url }}', 'In Progress', '{{ file.status }}')">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
             {{ file.name }}
         </div>
@@ -61,11 +61,11 @@
                     <h4>File Name: {{ file.name }}</h4>
                     <p>Uploaded By: {{ file.username }}</p>
                     <p>Description: {{ file.description }}</p>
-                    <select class="status-dropdown" onchange="updateStatus(this, '{{ file.url }}')">
-                        <option value="New">New</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                    </select>
+                    <p id="status-display">Status: {{ file.status }}</p>
+                    <button class="status-dropdown btn-primary"
+                        onclick="changeStatus('{{ file.url }}', 'Resolved', '{{ file.status }}')">
+                        Resolve
+                    </button>
                 </div>
                 <div class="file-display">
                     {% if '.pdf' in file.url|lower %}
@@ -101,41 +101,23 @@
             content.style.display = 'block';
         }
     }
-    function changeStatus(fileName) {
-        console.log($);
-        $.ajax({
-            url: '/profile/ajax/change_status/',
-            type: 'POST',
-            data: {
-                'fileName': fileName,
-                'newStatus': 'In Progress',
-            },
-            success: function (response) {
-                console.log(response.message);
-                document.getElementById("status-display").innerHTML = "In Progress"
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.error('Error updating status:', textStatus, errorThrown);
-            }
-        });
+    function changeStatus(fileName, status, previousStatus) {
+        if (!(status === previousStatus)) {
+            $.ajax({
+                url: '/profile/ajax/change_status/',
+                type: 'POST',
+                data: {
+                    'fileName': fileName,
+                    'newStatus': status,
+                },
+                success: function (response) {
+                    console.log(response.message);
+                    document.getElementById("status-display").innerHTML = status
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error updating status:', textStatus, errorThrown);
+                }
+            });
+        }
     }
-    function updateStatus(selectElement, fileName) {
-        const newStatus = selectElement.value;
-        $.ajax({
-            url: '/profile/ajax/change_status/',
-            type: 'POST',
-            data: {
-                'fileName': fileName,
-                'newStatus': newStatus,
-            },
-            success: function (response) {
-                console.log(response.message);
-                const statusDisplay = selectElement.parentElement.querySelector('.status-display');
-                statusDisplay.textContent = `Status: ${newStatus}`;
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.error('Error updating status:', textStatus, errorThrown);
-            }
-        });
-    }    
 </script>
