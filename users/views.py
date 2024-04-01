@@ -20,7 +20,7 @@ def profile(request):
             file_key = item['Key']
             if "uploads/" in file_key:
                 continue
-            url = str(file_key).replace(' ', '_')
+            url = str(file_key).replace(' ', ' ')
             metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
             metadata = metadata_response.get('Metadata', {})
             if is_site_admin or request.user.username == metadata.get('username'):
