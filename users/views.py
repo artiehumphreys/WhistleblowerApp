@@ -20,7 +20,7 @@ def profile(request):
             file_key = item['Key']
             if "uploads/" in file_key:
                 continue
-            url = str(file_key).replace(' ', '_')
+            url = str(file_key).replace(' ', ' ')
             metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
             metadata = metadata_response.get('Metadata', {})
             if is_site_admin or request.user.username == metadata.get('username'):
@@ -41,7 +41,7 @@ def profile(request):
 @require_http_methods(["POST"])
 def change_file_status(request):
     file_name = request.POST.get('fileName')
-    file_name = str(file_name).replace('_', ' ')
+    #file_name = str(file_name).replace('_', ' ')
     new_status = request.POST.get('newStatus')
     print(file_name)
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)

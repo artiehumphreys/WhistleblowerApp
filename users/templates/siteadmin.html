@@ -102,7 +102,7 @@
         }
     }
     function changeStatus(fileName, status, previousStatus) {
-        if (!(status === previousStatus)) {
+        if (!(status === previousStatus) && (status === 'Resolved')) {
             $.ajax({
                 url: '/profile/ajax/change_status/',
                 type: 'POST',
