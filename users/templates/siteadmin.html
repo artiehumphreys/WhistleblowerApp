@@ -1,9 +1,15 @@
 {% load socialaccount %}
+{% load bootstrap5 %}
 <h2>Welcome to the site admin page.</h2>
 <h2>Here's a list of all of the submitted files by users:</h2>
+
+<head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <!-- Include jQuery and Bootstrap Bundle JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <style>
@@ -51,7 +57,8 @@
 
 <ul style="list-style-type:none;">
     {% for file in files %}
-    <li class="dropdown-container">
+    <p aria-hidden="true" id="currentFileURL"></p>
+    <li class="dropdown-container" onclick="changeStatus('{{ file.url }}', 'In Progress', '{{ file.status }}')">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
             {{ file.name }}
         </div>
@@ -61,7 +68,12 @@
                     <h4>File Name: {{ file.name }}</h4>
                     <p>Uploaded By: {{ file.username }}</p>
                     <p>Description: {{ file.description }}</p>
-                    <p>Status: {{ file.status }}</p>
+                    <p id="status-display">Status: {{ file.status }}</p>
+                    <p id="note-display">Note: {{ file.note }}</p>
+                    <button class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal"
+                        onclick="changeStatus('{{ file.url }}', 'Resolved', '{{ file.status }}')">
+                        Resolve
+                    </button>
                 </div>
                 <div class="file-display">
                     {% if '.pdf' in file.url|lower %}
@@ -87,6 +99,26 @@
     {% endfor %}
 </ul>
 
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Resolve Issue</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleSubmit(event)">
+                    <div class="mb-3">
+                        <label for="userNote" class="form-label">Add a note:</label>
+                        <textarea class="form-control" id="userNote" name="userNote" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Note</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // JavaScript for dropdown functionality
     function toggleDropdown(element) {
@@ -97,4 +129,52 @@
             content.style.display = 'block';
         }
     }
+    function changeStatus(fileName, status, previousStatus) {
+        prepareModal(fileName);
+        if (!(status === previousStatus) && (status === 'Resolved')) {
+            $.ajax({
+                url: '/profile/ajax/change_status/',
+                type: 'POST',
+                data: {
+                    'fileName': fileName,
+                    'newStatus': status,
+                },
+                success: function (response) {
+                    console.log(response.message);
+                    document.getElementById("status-display").innerHTML = status
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error updating status:', textStatus, errorThrown);
+                }
+            });
+        }
+    }
+    function addNote(fileName, note) {
+        $.ajax({
+            url: '/profile/ajax/change_note/',
+            type: 'POST',
+            data: {
+                'fileName': fileName,
+                'newNote': note,
+            },
+            success: function (response) {
+                console.log(response.message);
+                document.getElementById("status-display").innerHTML = status
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.error('Error updating status:', textStatus, errorThrown);
+            }
+        });
+    }
+    function prepareModal(fileUrl) {
+        document.getElementById('currentFileURL').value = fileUrl
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        var fileUrl = document.getElementById('currentFileURL').value;
+        var userNote = document.getElementById('userNote').value;
+        addNote(fileUrl, userNote);
+    }
+
 </script>
