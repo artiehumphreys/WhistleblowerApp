@@ -131,7 +131,7 @@
     }
     function changeStatus(fileName, status, previousStatus) {
         prepareModal(fileName);
-        if (!(status === previousStatus) && (status === 'Resolved')) {
+        if (!(status === previousStatus) && !(previousStatus === 'Resolved')) {
             $.ajax({
                 url: '/profile/ajax/change_status/',
                 type: 'POST',
@@ -171,7 +171,6 @@
     }
 
     function handleSubmit(event) {
-        event.preventDefault();
         var fileUrl = document.getElementById('currentFileURL').value;
         var userNote = document.getElementById('userNote').value;
         addNote(fileUrl, userNote);
