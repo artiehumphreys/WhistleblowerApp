@@ -67,6 +67,7 @@
                     <h4>File Name: {{ file.name }}</h4>
                     <p>Description: {{ file.description }}</p>
                     <p>Status: {{ file.status }}</p>
+                    <p>Note: {{ file.note }}</p>
                 </div>
                 <div class="file-display">
                     {% if '.pdf' in file.url|lower %}

@@ -168,15 +168,12 @@
     }
     function prepareModal(fileUrl) {
         document.getElementById('currentFileURL').value = fileUrl
-        console.log(document.getElementById('currentFileURL').value);
     }
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log(document.getElementById('currentFileURL').value);
         var fileUrl = document.getElementById('currentFileURL').value;
         var userNote = document.getElementById('userNote').value;
-        console.log(fileUrl); // For debugging
         addNote(fileUrl, userNote);
     }
 
