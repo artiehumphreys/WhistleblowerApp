@@ -1,6 +1,12 @@
 {% load socialaccount %}
+{% load bootstrap5 %}
 <h2>Welcome to the site admin page.</h2>
 <h2>Here's a list of all of the submitted files by users:</h2>
+
+<head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <!-- Include jQuery and Bootstrap Bundle JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -62,7 +68,8 @@
                     <p>Uploaded By: {{ file.username }}</p>
                     <p>Description: {{ file.description }}</p>
                     <p id="status-display">Status: {{ file.status }}</p>
-                    <button class="status-dropdown btn-primary"
+                    <p id="note-display">Note: {{ file.note }}</p>
+                    <button class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal"
                         onclick="changeStatus('{{ file.url }}', 'Resolved', '{{ file.status }}')">
                         Resolve
                     </button>
@@ -95,13 +102,16 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
+                <h5 class="modal-title" id="reportModalLabel">Resolve Issue</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit Report</button>
+                <form onsubmit="handleSubmit(event, '{{ file.url }}')">
+                    <div class="mb-3">
+                        <label for="userNote" class="form-label">Add a note:</label>
+                        <textarea class="form-control" id="userNote" name="userNote" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Note</button>
                 </form>
             </div>
         </div>
@@ -137,14 +147,13 @@
             });
         }
     }
-
     function addNote(fileName, note) {
         $.ajax({
-            url: '/profile/ajax/change_status/',
+            url: '/profile/ajax/change_note/',
             type: 'POST',
             data: {
                 'fileName': fileName,
-                'newStatus': status,
+                'newNote': note,
             },
             success: function (response) {
                 console.log(response.message);
@@ -154,5 +163,10 @@
                 console.error('Error updating status:', textStatus, errorThrown);
             }
         });
+    }
+    function handleSubmit(event, fileUrl) {
+        event.preventDefault();
+        var userNote = document.getElementById('userNote').value;
+        addNote(fileUrl, userNote);
     }
 </script>

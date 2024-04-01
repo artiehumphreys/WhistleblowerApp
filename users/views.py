@@ -29,7 +29,8 @@ def profile(request):
                     'name': metadata.get('title', file_key),
                     'username': metadata.get('username', 'No User Data Available'),
                     'description': metadata.get('description', 'No Description Available.'),
-                    'status': metadata.get('status', 'In Progress')
+                    'status': metadata.get('status', 'In Progress'),
+                    'note': metadata.get('note', '')
                 })
     print(files)
     if is_site_admin:
