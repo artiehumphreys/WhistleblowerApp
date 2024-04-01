@@ -91,6 +91,23 @@
     {% endfor %}
 </ul>
 
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // JavaScript for dropdown functionality
     function toggleDropdown(element) {
@@ -119,5 +136,23 @@
                 }
             });
         }
+    }
+
+    function addNote(fileName, note) {
+        $.ajax({
+            url: '/profile/ajax/change_status/',
+            type: 'POST',
+            data: {
+                'fileName': fileName,
+                'newStatus': status,
+            },
+            success: function (response) {
+                console.log(response.message);
+                document.getElementById("status-display").innerHTML = status
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.error('Error updating status:', textStatus, errorThrown);
+            }
+        });
     }
 </script>
