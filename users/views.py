@@ -53,6 +53,7 @@ def change_file_status(request):
         error_code = e.response['Error']['Code']
         error_message = e.response['Error']['Message']
         print(f"Error code: {error_code}, Message: {error_message}")
+        return JsonResponse({'message': 'Error updating status'}, status=500)
     return JsonResponse({'message': 'Status updated successfully'})
 
 def logout_view(request):
