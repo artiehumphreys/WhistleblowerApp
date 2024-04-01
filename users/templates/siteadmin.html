@@ -57,6 +57,7 @@
 
 <ul style="list-style-type:none;">
     {% for file in files %}
+    <p aria-hidden="true" id="currentFileURL"></p>
     <li class="dropdown-container" onclick="changeStatus('{{ file.url }}', 'In Progress', '{{ file.status }}')">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
             {{ file.name }}
@@ -106,7 +107,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form onsubmit="handleSubmit(event, '{{ file.url }}')">
+                <form onsubmit="handleSubmit(event)">
                     <div class="mb-3">
                         <label for="userNote" class="form-label">Add a note:</label>
                         <textarea class="form-control" id="userNote" name="userNote" rows="3"></textarea>
@@ -129,6 +130,7 @@
         }
     }
     function changeStatus(fileName, status, previousStatus) {
+        prepareModal(fileName);
         if (!(status === previousStatus) && (status === 'Resolved')) {
             $.ajax({
                 url: '/profile/ajax/change_status/',
@@ -164,9 +166,18 @@
             }
         });
     }
-    function handleSubmit(event, fileUrl) {
+    function prepareModal(fileUrl) {
+        document.getElementById('currentFileURL').value = fileUrl
+        console.log(document.getElementById('currentFileURL').value);
+    }
+
+    function handleSubmit(event) {
         event.preventDefault();
+        console.log(document.getElementById('currentFileURL').value);
+        var fileUrl = document.getElementById('currentFileURL').value;
         var userNote = document.getElementById('userNote').value;
+        console.log(fileUrl); // For debugging
         addNote(fileUrl, userNote);
     }
+
 </script>
