@@ -59,7 +59,7 @@
 <ul style="list-style-type:none;">
     <p aria-hidden="true" id="currentFileURL"></p>
     {% for submission_id, files in submissions.items %}
-        <li class="dropdown-container" onclick="changeStatus('{{ submissions.items }}', '{{ submission_id }}', 'In Progress')">
+        <li class="dropdown-container" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '')">
             <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission ID: {{ submission_id }}</div>
         <div class="dropdown-content">
             {% for file in files %}
@@ -70,10 +70,6 @@
                     <p>Description: {{ file.description }}</p>
                     <p id="status-display">Status: {{ file.status }}</p>
                     <p id="note-display">Note: {{ file.note }}</p>
-                    <button class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal"
-                        onclick="changeStatus('{{ submissions.items }}', '{{ submission_id }}' 'Resolved')">
-                        Resolve
-                    </button>
                 </div>
                 <div class="file-display">
                     {% if '.pdf' in file.url|lower %}
@@ -95,6 +91,10 @@
                 </div>
             </div>
             {% endfor %}
+            <button class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal"
+            onclick="changeStatusForSubmission('{{ submission_id }}', 'Resolved', '')">
+            Resolve All
+        </button>
         </div>
     </li>
     {% endfor %}
@@ -132,41 +132,22 @@
             content.style.display = 'block';
         }
     }
-    function changeStatus(submission_id, id, newStatus) {
-        //prepareModal(fileName);
-        if (!(status === previousStatus) && !(previousStatus === 'Resolved')) {
-            $.ajax({
-                url: '/profile/ajax/change_status/',
-                type: 'POST',
-                data: {
-                    'submissionId': submission_id,
-                    'newStatus': status,
-                },
-                success: function (response) {
-                    console.log(response.message);
-                    document.getElementById("status-display").innerHTML = status
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    console.error('Error updating status:', textStatus, errorThrown);
-                }
-            });
-        }
-    }
-    
-    function addNote(fileName, note) {
+    function changeStatusForSubmission(submissionId, newStatus, note) {
         $.ajax({
-            url: '/profile/ajax/change_note/',
+            url: '/profile/ajax/change_status/', 
             type: 'POST',
             data: {
-                'fileName': fileName,
-                'newNote': note,
+                'submissionId': submissionId,
+                'newStatus': newStatus,
+                'note': note
             },
             success: function (response) {
-                console.log(response.message);
+                console.log('Status and note updated successfully for submission: ' + submissionId);
                 document.getElementById("status-display").innerHTML = status
+                document.getElementById("note-display").innerHTML = note
             },
             error: function (xhr, textStatus, errorThrown) {
-                console.error('Error updating status:', textStatus, errorThrown);
+                console.error('Error updating status and note:', textStatus, errorThrown);
             }
         });
     }
