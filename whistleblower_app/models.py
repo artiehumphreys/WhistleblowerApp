@@ -13,7 +13,7 @@ class UploadedFile(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed')
     )
-    submission = models.ForeignKey(Submission, related_name='files', on_delete=models.CASCADE)
+    submission = models.ForeignKey(Submission, related_name='files', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255)
     file = models.FileField(upload_to='uploads/')
     uploaded_at = models.DateTimeField(auto_now_add=True)

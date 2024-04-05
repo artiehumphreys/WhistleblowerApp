@@ -56,7 +56,7 @@
 </style>
 
 <ul style="list-style-type:none;">
-    {% for file in files %}
+    {% for file in submission.files %}
     <p aria-hidden="true" id="currentFileURL"></p>
     <li class="dropdown-container" onclick="changeStatus('{{ file.url }}', 'In Progress', '{{ file.status }}')">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
