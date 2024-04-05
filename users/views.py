@@ -27,6 +27,7 @@ def profile(request):
             print(url)
             try:
                 submission_id = str(url).split('/')[1]
+                url = str(url).split('/')[2]
             except:
                 submission_id = "Old Files"
             if submission_id != None and request.user.username == metadata.get('username'):
