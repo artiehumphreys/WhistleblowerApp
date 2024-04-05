@@ -7,6 +7,7 @@ import boto3
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from collections import defaultdict
 
 
 def index(request):
@@ -25,6 +26,7 @@ def file_upload_view(request):
                 uploaded_file.submission = submission
                 uploaded_file.file = file
                 uploaded_file.user = username
+                file_name = f"submissions/{submission.id}/{file.name}"
                 uploaded_file.save()
                 extra_args = {
                     'Metadata': {
@@ -35,7 +37,7 @@ def file_upload_view(request):
                         'note': ''
                     }
                 }
-                s3.upload_fileobj(file, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
+                s3.upload_fileobj(file, 'b29-whistleblower', file_name, ExtraArgs=extra_args)
             
     else:
         form = UploadFileForm()

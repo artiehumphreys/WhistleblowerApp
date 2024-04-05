@@ -55,15 +55,25 @@
     }
 </style>
 
+<h2>Test Submissions Display</h2>
+{% for submission in submissions %}
+    <p>Submission ID: {{ submission.id }}</p>
+{% empty %}
+    <p>No submissions found.</p>
+{% endfor %}
+
+
 <ul style="list-style-type:none;">
-    {% for file in submission.files %}
+    {% for submission in submissions %}
     <p aria-hidden="true" id="currentFileURL"></p>
+    <p>hi</p>
     <li class="dropdown-container" onclick="changeStatus('{{ file.url }}', 'In Progress', '{{ file.status }}')">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
             {{ file.name }}
         </div>
         <div class="dropdown-content">
             <div class="dropdown-content-inner">
+                {% for file in submission.files.all %}
                 <div class="file-info">
                     <h4>File Name: {{ file.name }}</h4>
                     <p>Uploaded By: {{ file.username }}</p>
@@ -77,9 +87,9 @@
                 </div>
                 <div class="file-display">
                     {% if '.pdf' in file.url|lower %}
-                    <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
+                    <object data="https://s3.amazonaws.com/b29-whistleblower/{{ file.url }}"
                         type="application/pdf" width="150%" height="150%">
-                        <a href="https://s3.amazonaws.com/b29-whistleblower/uploads{{ file.url }}" target="_blank">View
+                        <a href="https://s3.amazonaws.com/b29-whistleblower/{{ file.url }}" target="_blank">View
                             PDF</a>
                     </object>
                     {% elif '.jpg' in file.url|lower %}
@@ -93,11 +103,13 @@
                         File</a>
                     {% endif %}
                 </div>
+                {% endfor %}
             </div>
         </div>
     </li>
     {% endfor %}
 </ul>
+
 
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog">
