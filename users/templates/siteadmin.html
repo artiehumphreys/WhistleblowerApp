@@ -57,7 +57,6 @@
 
 
 <ul style="list-style-type:none;">
-    <p aria-hidden="true" id="currentFileURL"></p>
     {% for submission_id, files in submissions.items %}
         <li class="dropdown-container" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '')">
             <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission ID: {{ submission_id }}</div>
@@ -73,9 +72,9 @@
                 </div>
                 <div class="file-display">
                     {% if '.pdf' in file.url|lower %}
-                    <object data="https://s3.amazonaws.com/b29-whistleblower/{{ file.url }}"
+                    <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
                         type="application/pdf" width="150%" height="150%">
-                        <a href="https://s3.amazonaws.com/b29-whistleblower/{{ file.url }}" target="_blank">View
+                        <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank">View
                             PDF</a>
                     </object>
                     {% elif '.jpg' in file.url|lower %}
@@ -91,10 +90,9 @@
                 </div>
             </div>
             {% endfor %}
-            <button class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal"
-            onclick="changeStatusForSubmission('{{ submission_id }}', 'Resolved', '')">
-            Resolve All
-        </button>
+            <button id="resolveAllButton" class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal" onclick="setSubmissionId(event, {{ submission_id }})">
+                Resolve All
+            </button>
         </div>
     </li>
     {% endfor %}
@@ -110,6 +108,7 @@
             </div>
             <div class="modal-body">
                 <form onsubmit="handleSubmit(event)">
+                    <input type="hidden" id="currentSubmissionId" name="currentSubmissionId" value="">
                     <div class="mb-3">
                         <label for="userNote" class="form-label">Add a note:</label>
                         <textarea class="form-control" id="userNote" name="userNote" rows="3"></textarea>
@@ -122,6 +121,7 @@
 </div>
 
 <script>
+    let currentSubmissionId = null;
     // JavaScript for dropdown functionality
     function toggleDropdown(event, element) {
         event.stopPropagation();
@@ -151,14 +151,27 @@
             }
         });
     }
-    function prepareModal(fileUrl) {
-        document.getElementById('currentFileURL').value = fileUrl
-    }
+
 
     function handleSubmit(event) {
-        var fileUrl = document.getElementById('currentFileURL').value;
-        var userNote = document.getElementById('userNote').value;
-        addNote(fileUrl, userNote);
+        event.preventDefault();
+    
+        var submissionId = document.getElementById('currentSubmissionId').value;
+        var note = document.getElementById('userNote').value;
+        
+        if (!submissionId) {
+            console.error('Submission ID is missing.');
+            return;
+        }
+    
+        changeStatusForSubmission(submissionId, 'Resolved', note);
+    
+        document.getElementById('userNote').value = ''; 
+        $('#reportModal').modal('hide');
     }
+
+    function setSubmissionId(event, id){
+        document.getElementById('currentSubmissionId').value = id;
+    };
 
 </script>

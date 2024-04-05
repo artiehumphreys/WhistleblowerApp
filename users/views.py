@@ -70,7 +70,7 @@ def change_file_status(request):
                 metadata = metadata_response.get('Metadata', {})
                 
                 metadata['status'] = new_status
-                metadata['note'] = note
+                metadata['note'] = note if len(note) > 0 else metadata['note']
                 
                 s3.copy_object(
                     Bucket='b29-whistleblower', 
