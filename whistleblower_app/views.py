@@ -17,21 +17,23 @@ def file_upload_view(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES, username)
         if form.is_valid():
-            uploaded_file = form.save(commit=False)
-            uploaded_file.user = username
-            file_obj = request.FILES['file']
             s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-            extra_args = {
-                'Metadata': {
-                    'title': uploaded_file.title,
-                    'username': username,
-                    'description': uploaded_file.description,
-                    'status': 'new',
-                    'note': ''
+            for file in request.FILES.getlist('file'):
+                uploaded_file = form.save(commit=False)
+                uploaded_file.file = file
+                uploaded_file.user = username
+                file_obj = request.FILES['file']
+                uploaded_file.save()
+                extra_args = {
+                    'Metadata': {
+                        'title': uploaded_file.title,
+                        'username': username,
+                        'description': uploaded_file.description,
+                        'status': 'new',
+                        'note': ''
+                    }
                 }
-            }
-            uploaded_file.save()
-            s3.upload_fileobj(file_obj, 'b29-whistleblower', file_obj.name, ExtraArgs=extra_args)
+                s3.upload_fileobj(file_obj, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
             
     else:
         form = UploadFileForm()

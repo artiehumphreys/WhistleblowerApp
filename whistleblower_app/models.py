@@ -1,6 +1,10 @@
 from django.db import models
 from django.conf import settings
 
+class Submission(models.Model):
+    user = models.CharField(max_length=255)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
 
 class UploadedFile(models.Model):
     STATUS_CHOICES = (
@@ -9,7 +13,7 @@ class UploadedFile(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed')
     )
-
+    submission = models.ForeignKey(Submission, related_name='files', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     file = models.FileField(upload_to='uploads/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
