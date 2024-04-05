@@ -28,8 +28,17 @@ def profile(request):
             try:
                 submission_id = str(url).split('/')[1]
             except:
-                submission_id = 0
-            if (is_site_admin or request.user.username == metadata.get('username')) and submission_id != None:
+                submission_id = "Old Files"
+            if submission_id != None and request.user.username == metadata.get('username'):
+                submissions[submission_id].append({
+                    'url': url,
+                    'name': metadata.get('title', file_key),
+                    'username': metadata.get('username', 'No User Data Available'),
+                    'description': metadata.get('description', 'No Description Available.'),
+                    'status': metadata.get('status', 'In Progress'),
+                    'note': metadata.get('note', '')
+                })
+            elif (is_site_admin and submission_id != None):
                 submissions[submission_id].append({
                     'url': url,
                     'name': metadata.get('title', file_key),
@@ -41,19 +50,21 @@ def profile(request):
     if is_site_admin:
         return render(request, "siteadmin.html",{'submissions': dict(submissions)})
     else:
+        print(dict(submissions))
         return render(request, "profile.html", {'submissions': dict(submissions)})
     
 @csrf_exempt
 @require_http_methods(["POST"])
 def change_file_status(request):
-    file_name = request.POST.get('fileName')
-    #file_name = str(file_name).replace('_', ' ')
+    submission_id = request.POST.get('submissionID')
     new_status = request.POST.get('newStatus')
-    print(file_name)
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     try:
-        response = s3.head_object(Bucket='b29-whistleblower', Key=file_name)
-        metadata = response.get('Metadata', {})
+        response = s3.list_objects_v2(Bucket='b29-whistleblower')
+        if 'Contents' in response:
+            for item in response['Contents']:
+                
+                metadata = response.get('Metadata', {})
         metadata['status'] = new_status
         s3.copy_object(Bucket='b29-whistleblower', CopySource={'Bucket': 'b29-whistleblower', 'Key': file_name}, Key=file_name, Metadata=metadata, MetadataDirective='REPLACE')
     except ClientError as e:

@@ -59,8 +59,8 @@
 <ul style="list-style-type:none;">
     <p aria-hidden="true" id="currentFileURL"></p>
     {% for submission_id, files in submissions.items %}
-        <li class="dropdown-container" onclick="changeStatus('{{ file.url }}', 'In Progress', '{{ file.status }}')">
-            <div class="dropdown-title" onclick="toggleDropdown(this)">Submission ID: {{ submission_id }}</div>
+        <li class="dropdown-container" onclick="changeStatus('{{ submissions.items }}', '{{ submission_id }}', 'In Progress')">
+            <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission ID: {{ submission_id }}</div>
         <div class="dropdown-content">
             {% for file in files %}
             <div class="dropdown-content-inner">
@@ -71,7 +71,7 @@
                     <p id="status-display">Status: {{ file.status }}</p>
                     <p id="note-display">Note: {{ file.note }}</p>
                     <button class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal"
-                        onclick="changeStatus('{{ file.url }}', 'Resolved', '{{ file.status }}')">
+                        onclick="changeStatus('{{ submissions.items }}', '{{ submission_id }}' 'Resolved')">
                         Resolve
                     </button>
                 </div>
@@ -123,7 +123,8 @@
 
 <script>
     // JavaScript for dropdown functionality
-    function toggleDropdown(element) {
+    function toggleDropdown(event, element) {
+        event.stopPropagation();
         const content = element.nextElementSibling;
         if (content.style.display === 'block') {
             content.style.display = 'none';
@@ -131,14 +132,14 @@
             content.style.display = 'block';
         }
     }
-    function changeStatus(fileName, status, previousStatus) {
-        prepareModal(fileName);
+    function changeStatus(submission_id, id, newStatus) {
+        //prepareModal(fileName);
         if (!(status === previousStatus) && !(previousStatus === 'Resolved')) {
             $.ajax({
                 url: '/profile/ajax/change_status/',
                 type: 'POST',
                 data: {
-                    'fileName': fileName,
+                    'submissionId': submission_id,
                     'newStatus': status,
                 },
                 success: function (response) {
@@ -151,6 +152,7 @@
             });
         }
     }
+    
     function addNote(fileName, note) {
         $.ajax({
             url: '/profile/ajax/change_note/',
