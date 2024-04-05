@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from .forms import UploadFileForm
-from .models import UploadedFile
+from .models import UploadedFile, Submission
 import boto3
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -17,12 +17,14 @@ def file_upload_view(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES, username)
         if form.is_valid():
+            submission = Submission(user=username)
+            submission.save()
             s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-            for file in request.FILES.getlist('file'):
+            for file in form.cleaned_data['file']:
                 uploaded_file = form.save(commit=False)
+                uploaded_file.submission = submission
                 uploaded_file.file = file
                 uploaded_file.user = username
-                file_obj = request.FILES['file']
                 uploaded_file.save()
                 extra_args = {
                     'Metadata': {
@@ -33,7 +35,7 @@ def file_upload_view(request):
                         'note': ''
                     }
                 }
-                s3.upload_fileobj(file_obj, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
+                s3.upload_fileobj(file, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
             
     else:
         form = UploadFileForm()
