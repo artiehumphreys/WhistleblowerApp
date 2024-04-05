@@ -55,25 +55,15 @@
     }
 </style>
 
-<h2>Test Submissions Display</h2>
-{% for submission in submissions %}
-    <p>Submission ID: {{ submission.id }}</p>
-{% empty %}
-    <p>No submissions found.</p>
-{% endfor %}
-
 
 <ul style="list-style-type:none;">
-    {% for submission in submissions %}
     <p aria-hidden="true" id="currentFileURL"></p>
-    <p>hi</p>
-    <li class="dropdown-container" onclick="changeStatus('{{ file.url }}', 'In Progress', '{{ file.status }}')">
-        <div class="dropdown-title" onclick="toggleDropdown(this)">
-            {{ file.name }}
-        </div>
+    {% for submission_id, files in submissions.items %}
+        <li class="dropdown-container" onclick="changeStatus('{{ file.url }}', 'In Progress', '{{ file.status }}')">
+            <div class="dropdown-title" onclick="toggleDropdown(this)">Submission ID: {{ submission_id }}</div>
         <div class="dropdown-content">
+            {% for file in files %}
             <div class="dropdown-content-inner">
-                {% for file in submission.files.all %}
                 <div class="file-info">
                     <h4>File Name: {{ file.name }}</h4>
                     <p>Uploaded By: {{ file.username }}</p>
@@ -103,8 +93,8 @@
                         File</a>
                     {% endif %}
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
         </div>
     </li>
     {% endfor %}

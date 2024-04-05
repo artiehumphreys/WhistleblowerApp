@@ -8,11 +8,12 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from botocore.exceptions import ClientError
+from collections import defaultdict
 
 def profile(request):
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     response = s3.list_objects_v2(Bucket='b29-whistleblower')
-    files = []
+    submissions = defaultdict(list)
     is_site_admin = request.user.groups.filter(name="Site Admin").exists()  # Check once before the loop
 
     if 'Contents' in response:
@@ -23,8 +24,13 @@ def profile(request):
             url = str(file_key).replace(' ', ' ')
             metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
             metadata = metadata_response.get('Metadata', {})
-            if is_site_admin or request.user.username == metadata.get('username'):
-                files.append({
+            print(url)
+            try:
+                submission_id = str(url).split('/')[1]
+            except:
+                submission_id = 0
+            if (is_site_admin or request.user.username == metadata.get('username')) and submission_id != None:
+                submissions[submission_id].append({
                     'url': url,
                     'name': metadata.get('title', file_key),
                     'username': metadata.get('username', 'No User Data Available'),
@@ -32,11 +38,10 @@ def profile(request):
                     'status': metadata.get('status', 'In Progress'),
                     'note': metadata.get('note', '')
                 })
-    print(files)
     if is_site_admin:
-        return render(request, "siteadmin.html", {'files': files})
+        return render(request, "siteadmin.html",{'submissions': dict(submissions)})
     else:
-        return render(request, "profile.html", {'files': files})
+        return render(request, "profile.html", {'submissions': dict(submissions)})
     
 @csrf_exempt
 @require_http_methods(["POST"])
