@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from botocore.exceptions import ClientError
 from collections import defaultdict
+from whistleblower_app.forms import UploadFileForm
 
 def profile(request):
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
@@ -49,10 +50,10 @@ def profile(request):
                     'note': metadata.get('note', '')
                 })
     if is_site_admin:
-        return render(request, "siteadmin.html",{'submissions': dict(submissions)})
+        return render(request, "users/siteadmin.html",{'submissions': dict(submissions)})
     else:
         print(dict(submissions))
-        return render(request, "profile.html", {'submissions': dict(submissions)})
+        return render(request, "users/profile.html", {'submissions': dict(submissions), 'form': UploadFileForm})
     
 @csrf_exempt
 @require_http_methods(["POST"])

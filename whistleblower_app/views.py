@@ -7,9 +7,13 @@ import boto3
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth import logout
+from users import templates
 
 
 def index(request):
+    if(request.user.is_authenticated):
+        return redirect("/profile/")
     return render(request, "whistleblower_app/index.html", {'form': UploadFileForm})
 
 def file_upload_view(request):
@@ -40,3 +44,11 @@ def file_upload_view(request):
     else:
         form = UploadFileForm()
     return render(request, "whistleblower_app/file_upload.html", {'form': form})
+
+def list_files(request):
+    files = UploadedFile.objects.all()
+    return render(request, "users/templates/siteadmin.html", {'files': files})
+
+def logout_view(request):
+    logout(request)
+    return redirect("/whistleblower/")
