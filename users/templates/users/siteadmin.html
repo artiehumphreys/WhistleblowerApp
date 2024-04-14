@@ -64,7 +64,7 @@
 
 <ul style="list-style-type:none;">
     {% for submission_id, files in submissions.items %}
-        <li class="dropdown-container" data-submission-id="{{ submission_id }}" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '')">
+        <li class="dropdown-container" data-submission-id="{{ submission_id }}" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '{{ file.status }}', '')">
             <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission ID: {{ submission_id }}</div>
         <div class="dropdown-content">
             {% for file in files %}
@@ -137,25 +137,26 @@
             content.style.display = 'block';
         }
     }
-    function changeStatusForSubmission(submissionId, newStatus, note) {
-        //console.log(submissionId);
-        $.ajax({
-            url: '/profile/ajax/change_status/', 
-            type: 'POST',
-            data: {
-                'submissionId': submissionId,
-                'newStatus': newStatus,
-                'note': note
-            },
-            success: function (response) {
-                console.log('Status and note updated successfully for submission: ' + submissionId);
-                document.getElementById("status-display").innerHTML = status
-                document.getElementById("note-display").innerHTML = note
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.error('Error updating status and note:', textStatus, errorThrown);
-            }
-        });
+    function changeStatusForSubmission(submissionId, newStatus, oldStatus, note) {
+        if ((newStatus !== oldStatus) && (newStatus === 'Resolved' && oldStatus !== 'Resolved')){
+            $.ajax({
+                url: '/profile/ajax/change_status/', 
+                type: 'POST',
+                data: {
+                    'submissionId': submissionId,
+                    'newStatus': newStatus,
+                    'note': note
+                },
+                success: function (response) {
+                    console.log('Status and note updated successfully for submission: ' + submissionId);
+                    document.getElementById("status-display").innerHTML = status
+                    document.getElementById("note-display").innerHTML = note
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error updating status and note:', textStatus, errorThrown);
+                }
+            });
+        }
     }
 
 
@@ -170,7 +171,7 @@
             return;
         }
     
-        changeStatusForSubmission(submissionId, 'Resolved', note);
+        changeStatusForSubmission(submissionId, 'Resolved', 'In Progress', note);
     
         document.getElementById('userNote').value = ''; 
         $('#reportModal').modal('hide');
