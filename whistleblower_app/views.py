@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
+from django.core.files.base import ContentFile
 from django.template import loader
 from .forms import UploadFileForm
 from .models import UploadedFile, Submission
@@ -9,6 +10,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import logout
 from users import templates
+import tempfile
+import os
+
 
 
 def index(request):
@@ -18,7 +22,11 @@ def index(request):
 
 def file_upload_view(request):
     username = request.user.username if request.user.is_authenticated else "anonymous"
-    if request.method == 'POST' and len(request.FILES) > 0:
+    if request.method == 'POST':
+        if not request.FILES:
+            content = 'No File Attached'
+            default_file = ContentFile(content.encode(), name='default.txt')
+            request.FILES['file'] = default_file
         form = UploadFileForm(request.POST, request.FILES, username)
         if form.is_valid():
             submission = Submission(user=username)
@@ -41,15 +49,6 @@ def file_upload_view(request):
                     }
                 }
                 s3.upload_fileobj(file, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
-    elif request.method == 'POST':
-        submission = Submission(user=username)
-        submission.save()
-        s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-        f = open("file.txt", "w")
-        form = UploadFileForm(request.POST, request.FILES, username)
-
-        
-
     else:
         form = UploadFileForm()
     return render(request, "whistleblower_app/file_upload.html", {'form': form})
