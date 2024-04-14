@@ -2,6 +2,11 @@
 {% load bootstrap5 %}
 <h2>Welcome to the site admin page.</h2>
 <h2>Here's a list of all of the submitted files by users:</h2>
+{% if user.is_authenticated %}
+        <a href="logout" class = "position-absolute top-0 end-0 me-5 mt-5">
+            <button>Logout</button>
+        </a>
+    {% endif %}
 
 <head>
     {% bootstrap_css %}
@@ -54,6 +59,7 @@
         height: auto;
     }
 </style>
+
 
 
 <ul style="list-style-type:none;">
@@ -132,7 +138,7 @@
         }
     }
     function changeStatusForSubmission(submissionId, newStatus, note) {
-        console.log(submissionId);
+        //console.log(submissionId);
         $.ajax({
             url: '/profile/ajax/change_status/', 
             type: 'POST',

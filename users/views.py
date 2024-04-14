@@ -23,6 +23,7 @@ def profile(request):
             if "uploads/" in file_key:
                 continue
             url = str(file_key).replace(' ', '_')
+            print(str(file_key))
             metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
             metadata = metadata_response.get('Metadata', {})
             submission_id = metadata.get('submission_id', "Old Files")
@@ -35,7 +36,6 @@ def profile(request):
                     'status': metadata.get('status', 'In Progress'),
                     'note': metadata.get('note', '')
                 })
-                print(submissions[submission_id])
             elif (is_site_admin and submission_id != None):
                 submissions[submission_id].append({
                     'url': url,
