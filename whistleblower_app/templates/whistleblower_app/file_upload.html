@@ -4,7 +4,12 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% block content %}
-<div>
+<div class="container mt-3">
     <p>File uploaded successfully.</p>
+    {% if user.is_authenticated %}
+        <a href="{% url 'login' %}">
+            <button>Back to Profile</button>
+        </a>
+    {% endif %}
 </div>
 {% endblock content %}
