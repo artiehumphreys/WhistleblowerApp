@@ -58,7 +58,7 @@
 
 <ul style="list-style-type:none;">
     {% for submission_id, files in submissions.items %}
-        <li class="dropdown-container" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '')">
+        <li class="dropdown-container" data-submission-id="{{ submission_id }}" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '')">
             <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission ID: {{ submission_id }}</div>
         <div class="dropdown-content">
             {% for file in files %}
@@ -124,7 +124,6 @@
     let currentSubmissionId = null;
     // JavaScript for dropdown functionality
     function toggleDropdown(event, element) {
-        event.stopPropagation();
         const content = element.nextElementSibling;
         if (content.style.display === 'block') {
             content.style.display = 'none';
@@ -133,6 +132,7 @@
         }
     }
     function changeStatusForSubmission(submissionId, newStatus, note) {
+        console.log(submissionId);
         $.ajax({
             url: '/profile/ajax/change_status/', 
             type: 'POST',

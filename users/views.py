@@ -58,23 +58,25 @@ def change_file_status(request):
     note = request.POST.get('note')
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     try:
-        response = s3.list_objects_v2(Bucket='b29-whistleblower', Prefix=f"submissions/{submission_id}/")
+        response = s3.list_objects_v2(Bucket='b29-whistleblower')
         if 'Contents' in response:
             for item in response['Contents']: 
                 file_key = item['Key']
+                if "uploads/" in file_key:
+                    continue
                 metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
                 metadata = metadata_response.get('Metadata', {})
-                
-                metadata['status'] = new_status
-                metadata['note'] = note if len(note) > 0 else metadata['note']
-                
-                s3.copy_object(
-                    Bucket='b29-whistleblower', 
-                    CopySource={'Bucket': 'b29-whistleblower', 'Key': file_key},
-                    Key=file_key, 
-                    Metadata=metadata, 
-                    MetadataDirective='REPLACE'
-                )
+                if submission_id == metadata.get('submission_id', "Old Files"):
+                    metadata['status'] = new_status
+                    metadata['note'] = note if len(note) > 0 else metadata['note']
+                    
+                    s3.copy_object(
+                        Bucket='b29-whistleblower', 
+                        CopySource={'Bucket': 'b29-whistleblower', 'Key': file_key},
+                        Key=file_key, 
+                        Metadata=metadata, 
+                        MetadataDirective='REPLACE'
+                    )
     except ClientError as e:
         error_code = e.response['Error']['Code']
         error_message = e.response['Error']['Message']
