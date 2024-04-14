@@ -7,5 +7,6 @@ urlpatterns = [
     path("", views.index, name="index"),
     path('accounts/', include('allauth.urls')),
     path('upload/', file_upload_view, name='upload'),
-
+    path("logout/", views.logout_view, name="logout"),
+    path("upload/logout/", views.logout_view, name="logout")
 ]

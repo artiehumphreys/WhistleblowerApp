@@ -2,7 +2,7 @@
 {% load socialaccount %}
 {% block title %}User Profile - {{ user.username }}{% endblock title %}
 {% block header %}
-<h1>User Profile - {{ user.username }}</h1>
+<h1>Welcome, {{ user.username }}</h1>
 {% endblock header %}
 {% block content %}
 <style>
@@ -48,20 +48,18 @@
     }
 </style>
 <div class="d-flex justify-content-between align-items-center mb-5">
-    <p class="mt-3">Welcome, {{user.get_full_name}}</p>
-    <a href="logout">
-        <button>Logout</button>
-    </a>
+    <!-- <p class="mt-3">Welcome, {{user.get_full_name}}</p> -->
 </div>
-{% if files|length > 0%}
+{% if submissions|length > 0%}
 <h3>Your Previous Reports</h3>
 <ul style="list-style-type:none;">
-    {% for file in files %}
+    {% for submission_id, files in submissions.items %}
     <li class="dropdown-container">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
-            {{ file.name }}
+            Submission ID: {{ submission_id }}
         </div>
         <div class="dropdown-content">
+            {% for file in files %}
             <div class="dropdown-content-inner">
                 <div class="file-info">
                     <h4>File Name: {{ file.name }}</h4>
@@ -88,6 +86,7 @@
                     {% endif %}
                 </div>
             </div>
+            {% endfor %}
         </div>
     </li>
     {% endfor %}
