@@ -17,7 +17,7 @@ class UploadedFile(models.Model):
     title = models.CharField(max_length=255)
     file = models.FileField(upload_to='uploads/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    description = models.TextField(default="No Description Available.")
+    description = models.TextField(default="")
     user = models.CharField(max_length=255, default="No User Data Available")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
     note = models.TextField(blank=True, null=True)

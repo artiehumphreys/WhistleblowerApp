@@ -18,7 +18,7 @@ def index(request):
 
 def file_upload_view(request):
     username = request.user.username if request.user.is_authenticated else "anonymous"
-    if request.method == 'POST':
+    if request.method == 'POST' and len(request.FILES) > 0:
         form = UploadFileForm(request.POST, request.FILES, username)
         if form.is_valid():
             submission = Submission(user=username)
@@ -41,7 +41,15 @@ def file_upload_view(request):
                     }
                 }
                 s3.upload_fileobj(file, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
-            
+    elif request.method == 'POST':
+        submission = Submission(user=username)
+        submission.save()
+        s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        f = open("file.txt", "w")
+        form = UploadFileForm(request.POST, request.FILES, username)
+
+        
+
     else:
         form = UploadFileForm()
     return render(request, "whistleblower_app/file_upload.html", {'form': form})

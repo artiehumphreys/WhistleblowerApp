@@ -138,7 +138,7 @@
         }
     }
     function changeStatusForSubmission(submissionId, newStatus, oldStatus, note) {
-        if ((newStatus !== oldStatus) && (newStatus === 'Resolved' && oldStatus !== 'Resolved')){
+        if ((newStatus !== oldStatus) && (oldStatus !== 'Resolved')){
             $.ajax({
                 url: '/profile/ajax/change_status/', 
                 type: 'POST',
