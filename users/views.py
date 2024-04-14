@@ -22,7 +22,7 @@ def profile(request):
             file_key = item['Key']
             if "uploads/" in file_key:
                 continue
-            url = str(file_key).replace(' ', '_')
+            url = str(file_key).replace(' ', '_').replace('(', '').replace(')', '')
             print(str(file_key))
             metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
             metadata = metadata_response.get('Metadata', {})
