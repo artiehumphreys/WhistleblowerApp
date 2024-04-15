@@ -27,7 +27,6 @@ def profile(request):
             metadata = metadata_response.get('Metadata', {})
             submission_id = metadata.get('submission_id', "Old Files")
             if submission_id != None and request.user.username == metadata.get('username'):
-                print(url)
                 submissions[submission_id].append({
                     'url': url,
                     'name': metadata.get('title', file_key),
@@ -37,7 +36,6 @@ def profile(request):
                     'note': metadata.get('note', '')
                 })
             elif (is_site_admin and submission_id != None):
-                print(url)
                 submissions[submission_id].append({
                     'url': url,
                     'name': metadata.get('title', file_key),
