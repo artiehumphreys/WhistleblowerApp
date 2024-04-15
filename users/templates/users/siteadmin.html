@@ -2,6 +2,11 @@
 {% load bootstrap5 %}
 <h2>Welcome to the site admin page.</h2>
 <h2>Here's a list of all of the submitted files by users:</h2>
+{% if user.is_authenticated %}
+        <a href="logout" class = "position-absolute top-0 end-0 me-5 mt-5">
+            <button>Logout</button>
+        </a>
+    {% endif %}
 
 <head>
     {% bootstrap_css %}
@@ -56,9 +61,10 @@
 </style>
 
 
+
 <ul style="list-style-type:none;">
     {% for submission_id, files in submissions.items %}
-        <li class="dropdown-container" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '')">
+        <li class="dropdown-container" data-submission-id="{{ submission_id }}" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '{{ file.status }}', '')">
             <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission ID: {{ submission_id }}</div>
         <div class="dropdown-content">
             {% for file in files %}
@@ -81,10 +87,10 @@
                     <img src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
                         style="width: 60%; height: auto; max-width: 600px;">
                     {% elif '.txt' in file.url|lower %}
-                    <iframe src="https://s3.amazonaws.com/b29-whistleblower/uploads{{ file.url }}"
-                        style="width: 75%; height: 500px;"></iframe>
+                    <embed src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
+                        style="width: 75%; height: 500px;"></embed>
                     {% else %}
-                    <a href="https://s3.amazonaws.com/b29-whistleblower/uploads{{ file.url }}" target="_blank">Download
+                    <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank">Download
                         File</a>
                     {% endif %}
                 </div>
@@ -124,7 +130,6 @@
     let currentSubmissionId = null;
     // JavaScript for dropdown functionality
     function toggleDropdown(event, element) {
-        event.stopPropagation();
         const content = element.nextElementSibling;
         if (content.style.display === 'block') {
             content.style.display = 'none';
@@ -132,24 +137,26 @@
             content.style.display = 'block';
         }
     }
-    function changeStatusForSubmission(submissionId, newStatus, note) {
-        $.ajax({
-            url: '/profile/ajax/change_status/', 
-            type: 'POST',
-            data: {
-                'submissionId': submissionId,
-                'newStatus': newStatus,
-                'note': note
-            },
-            success: function (response) {
-                console.log('Status and note updated successfully for submission: ' + submissionId);
-                document.getElementById("status-display").innerHTML = status
-                document.getElementById("note-display").innerHTML = note
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.error('Error updating status and note:', textStatus, errorThrown);
-            }
-        });
+    function changeStatusForSubmission(submissionId, newStatus, oldStatus, note) {
+        if ((newStatus !== oldStatus) && (oldStatus !== 'Resolved')){
+            $.ajax({
+                url: '/profile/ajax/change_status/', 
+                type: 'POST',
+                data: {
+                    'submissionId': submissionId,
+                    'newStatus': newStatus,
+                    'note': note
+                },
+                success: function (response) {
+                    console.log('Status and note updated successfully for submission: ' + submissionId);
+                    document.getElementById("status-display").innerHTML = status
+                    document.getElementById("note-display").innerHTML = note
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error updating status and note:', textStatus, errorThrown);
+                }
+            });
+        }
     }
 
 
@@ -164,7 +171,7 @@
             return;
         }
     
-        changeStatusForSubmission(submissionId, 'Resolved', note);
+        changeStatusForSubmission(submissionId, 'Resolved', 'In Progress', note);
     
         document.getElementById('userNote').value = ''; 
         $('#reportModal').modal('hide');
