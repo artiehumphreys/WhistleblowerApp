@@ -87,8 +87,8 @@
                     <img src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
                         style="width: 60%; height: auto; max-width: 600px;">
                     {% elif '.txt' in file.url|lower %}
-                    <iframe src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                        style="width: 75%; height: 500px;"></iframe>
+                    <embed src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
+                        style="width: 75%; height: 500px;"></embed>
                     {% else %}
                     <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank">Download
                         File</a>
