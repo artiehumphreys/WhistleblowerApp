@@ -25,9 +25,10 @@ def profile(request):
             url = str(file_key).replace(' ', '_').replace('(', '').replace(')', '')
             metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
             metadata = metadata_response.get('Metadata', {})
+            print(metadata)
             submission_id = metadata.get('submission_id', "Old Files")
             if submission_id != None and request.user.username == metadata.get('username'):
-                submissions[submission_id].append({
+                submissions[metadata.get('title')].append({
                     'url': url,
                     'name': metadata.get('title', file_key),
                     'username': metadata.get('username', 'No User Data Available'),
@@ -36,7 +37,7 @@ def profile(request):
                     'note': metadata.get('note', '')
                 })
             elif (is_site_admin and submission_id != None):
-                submissions[submission_id].append({
+                submissions[metadata.get('title')].append({
                     'url': url,
                     'name': metadata.get('title', file_key),
                     'username': metadata.get('username', 'No User Data Available'),

@@ -69,12 +69,29 @@
         <div class="dropdown-content">
             {% for file in files %}
             <div class="dropdown-content-inner">
-                <div class="file-info">
-                    <h4>File Name: {{ file.url }}</h4>
-                    <p>Uploaded By: {{ file.username }}</p>
-                    <p>Description: {{ file.description }}</p>
-                    <p id="status-display">Status: {{ file.status }}</p>
-                    <p id="note-display">Note: {{ file.note }}</p>
+                <div class="file-info flex">
+                    {% comment %} <h4>File Name: {{ file.url }}</h4> {% endcomment %}
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 class="me-2 mb-0">Uploaded By:</h5>
+                        <p class="mb-0">{{ file.username }}</p>
+                    </div>
+                    <br>
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 class="me-2 mb-0">Description:</h5>
+                        <p class="mb-0">{{ file.description }}</p>
+                    </div>
+                    <br>
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 id="status-display" class="me-2 mb-0">Status:</h5>
+                        <p class="mb-0">{{ file.status }}</p>
+                    </div>
+                    <br>
+                    {% if file.note %}
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 id="note-display" class="me-2 mb-0">Note:</h5>
+                        <p class="mb-0">{{ file.note }}</p>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="file-display">
                     {% if '.pdf' in file.url|lower %}
