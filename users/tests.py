@@ -25,7 +25,7 @@ class ProfileViewTest(TestCase):
         self.client.force_login(self.user)
         response = self.client.get('/profile/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, ' users/siteadmin.html')
+        self.assertTemplateUsed(response, 'users/siteadmin.html')
 
     @patch('users.views.boto3.client')
     def test_profile_view_as_normal_user(self, mock_boto3_client):
