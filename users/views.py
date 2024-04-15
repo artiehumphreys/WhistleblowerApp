@@ -28,7 +28,7 @@ def profile(request):
             print(metadata)
             submission_id = metadata.get('submission_id', "Old Files")
             if submission_id != None and request.user.username == metadata.get('username'):
-                submissions[metadata.get('title')].append({
+                submissions[submission_id].append({
                     'url': url,
                     'name': metadata.get('title', file_key),
                     'username': metadata.get('username', 'No User Data Available'),
@@ -37,7 +37,7 @@ def profile(request):
                     'note': metadata.get('note', '')
                 })
             elif (is_site_admin and submission_id != None):
-                submissions[metadata.get('title')].append({
+                submissions[submission_id].append({
                     'url': url,
                     'name': metadata.get('title', file_key),
                     'username': metadata.get('username', 'No User Data Available'),
@@ -67,8 +67,10 @@ def change_file_status(request):
                 metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
                 metadata = metadata_response.get('Metadata', {})
                 if submission_id == metadata.get('submission_id', "Old Files"):
+                    if metadata.get('status') == "Resolved":
+                        continue
                     metadata['status'] = new_status
-                    metadata['note'] = note if len(note) > 0 else metadata['note']
+                    metadata['note'] = note if note != None else metadata['note']
                     
                     s3.copy_object(
                         Bucket='b29-whistleblower', 

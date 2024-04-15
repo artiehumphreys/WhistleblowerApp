@@ -64,7 +64,7 @@
 
 <ul style="list-style-type:none;">
     {% for submission_id, files in submissions.items %}
-        <li class="dropdown-container" data-submission-id="{{ submission_id }}" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '{{ file.status }}', '')">
+        <li class="dropdown-container" data-submission-id="{{ submission_id }}" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '')">
             <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission: {{ submission_id }}</div>
         <div class="dropdown-content">
             {% for file in files %}
@@ -107,8 +107,8 @@
                     <embed src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
                         style="width: 75%; height: 500px;"></embed>
                     {% else %}
-                    <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank">Download
-                        File</a>
+                    <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank">View
+                        File in a New Window</a>
                     {% endif %}
                 </div>
             </div>
@@ -188,7 +188,7 @@
             return;
         }
     
-        changeStatusForSubmission(submissionId, 'Resolved', 'In Progress', note);
+        changeStatusForSubmission(submissionId, 'Resolved', note);
     
         document.getElementById('userNote').value = ''; 
         $('#reportModal').modal('hide');
