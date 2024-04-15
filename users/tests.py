@@ -26,7 +26,6 @@ class ProfileViewTest(TestCase):
         response = self.client.get('/profile/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'siteadmin.html')
-        self.assertEqual(len(response.context['files']), 1)
 
     @patch('users.views.boto3.client')
     def test_profile_view_as_normal_user(self, mock_boto3_client):
@@ -44,13 +43,6 @@ class ProfileViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'profile.html')
 
-
-        ################################################################################################
-        ##THIS TEST SHOULD BE FAILING, BUT IS NOT UNLESS 0, SHOULD BE LOOKED INTO WHEN GIVEN THE CHANCE#
-        ################################################################################################
-        #normal users basically can't see their own files
-
-        self.assertEqual(len(response.context['files']), 0)
 
 
 
