@@ -67,6 +67,7 @@ def change_file_status(request):
                 metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
                 metadata = metadata_response.get('Metadata', {})
                 if submission_id == metadata.get('submission_id', "Old Files"):
+                    print(note)
                     if metadata.get('status') == "Resolved":
                         continue
                     metadata['status'] = new_status

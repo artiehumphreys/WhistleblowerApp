@@ -3,8 +3,12 @@ from django.conf import settings
 import uuid
 
 
+def generate_unique_id():
+    id = uuid.uuid4()
+    return str(id).replace('-', '')
+
 class Submission(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=generate_unique_id, editable=False)
     user = models.CharField(max_length=255)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
