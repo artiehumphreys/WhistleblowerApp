@@ -53,10 +53,10 @@
 {% if submissions|length > 0%}
 <h3>Your Previous Reports</h3>
 <ul style="list-style-type:none;">
-    {% for submission_id, files in submissions.items %}
+    {% for submission_data, files in submissions.items %}
     <li class="dropdown-container">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
-            Submission ID: {{ submission_id }}
+            Submission ID: {{ submission_data.1 }}
         </div>
         <div class="dropdown-content">
             {% for file in files %}
