@@ -48,7 +48,8 @@ def file_upload_view(request):
                         'submission_id': str(uploaded_file.submission.id)
                     }
                 }
-                s3.upload_fileobj(file, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
+                key = str(uploaded_file.submission.id) + file.name
+                s3.upload_fileobj(file, 'b29-whistleblower', key, ExtraArgs=extra_args)
     else:
         form = UploadFileForm()
     return render(request, "whistleblower_app/file_upload.html", {'form': form})

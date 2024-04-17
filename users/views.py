@@ -22,10 +22,10 @@ def profile(request):
             file_key = item['Key']
             if "uploads/" in file_key:
                 continue
-            url = str(file_key).replace(' ', '_').replace('(', '').replace(')', '')
             metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
             metadata = metadata_response.get('Metadata', {})
             submission_id = metadata.get('submission_id', "Old Files")
+            url = str(file_key).replace(' ', '_').replace('(', '').replace(')', '')
             if submission_id != None and request.user.username == metadata.get('username'):
                 submissions[(submission_id, metadata.get('title'))].append({
                     'url': url,
