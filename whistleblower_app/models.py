@@ -21,14 +21,14 @@ class UploadedFile(models.Model):
         ('failed', 'Failed')
     )
     TAG_CHOICES = (
-        ('physical', 'Physical Bullying'),
-        ('verbal', 'Verbal Abuse'),
-        ('cyber', 'Cyberbullying'),
-        ('racism', 'Racist Bullying'),
-        ('sexual', 'Inappropriate Sexual Comments'),
-        ('social', 'Social Bullying'),
-        ('emotional', 'Emotional Intimidation'),
-        ('other', 'Other'),
+        ('Physical Bullying', 'Physical Bullying'),
+        ('Verbal Abuse', 'Verbal Abuse'),
+        ('Cyberbullying', 'Cyberbullying'),
+        ('Racist Bullying', 'Racist Bullying'),
+        ('Inappropriate Sexual Comments', 'Inappropriate Sexual Comments'),
+        ('Social Bullying', 'Social Bullying'),
+        ('Emotional Intimidation', 'Emotional Intimidation'),
+        ('Other', 'Other'),
     )
     submission = models.ForeignKey(Submission, related_name='files', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255)

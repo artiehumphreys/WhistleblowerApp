@@ -21,7 +21,7 @@ def index(request):
     return render(request, "whistleblower_app/index.html", {'form': UploadFileForm})
 
 def file_upload_view(request):
-    username = request.user.username if request.user.is_authenticated else "anonymous"
+    username = request.user.username if request.user.is_authenticated else "Anonymous"
     if request.method == 'POST':
         if not request.FILES:
             content = 'No File Attached'
