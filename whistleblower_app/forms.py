@@ -22,4 +22,4 @@ class UploadFileForm(forms.ModelForm):
     file = MultipleFileField(required=False)
     class Meta:
         model = UploadedFile
-        fields = ('title', 'file', 'description')
+        fields = ('title', 'file', 'description', 'tag')

@@ -20,6 +20,16 @@ class UploadedFile(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed')
     )
+    TAG_CHOICES = (
+        ('physical', 'Physical Bullying'),
+        ('verbal', 'Verbal Abuse'),
+        ('cyber', 'Cyberbullying'),
+        ('racism', 'Racist Bullying'),
+        ('sexual', 'Inappropriate Sexual Comments'),
+        ('social', 'Social Bullying'),
+        ('emotional', 'Emotional Intimidation'),
+        ('other', 'Other'),
+    )
     submission = models.ForeignKey(Submission, related_name='files', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255)
     file = models.FileField(upload_to='uploads/')
@@ -28,6 +38,7 @@ class UploadedFile(models.Model):
     user = models.CharField(max_length=255, default="No User Data Available")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
     note = models.TextField(blank=True, null=True)
+    tag = models.CharField(max_length=30, choices=TAG_CHOICES, default='other')
 
     def __str__(self):
         return self.title
