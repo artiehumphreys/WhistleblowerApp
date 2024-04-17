@@ -1,0 +1,67 @@
+/* Custom CSS for the Bullying Whistleblower App */
+
+/* Container */
+.container {
+    margin: 0 auto;
+}
+
+/* Header */
+h1 {
+    color: #333;
+}
+
+/* Logout Button */
+a.logout-btn {
+    text-decoration: none;
+    color: #fff;
+    background-color: #007bff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+a.logout-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Login Button */
+a.login-btn {
+    text-decoration: none;
+    color: #007bff;
+}
+
+a.login-btn i {
+    font-size: 24px;
+    margin-right: 8px;
+}
+
+/* Report Button */
+.btn-report {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+    transition: background-color 0.3s ease;
+}
+
+.btn-report:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    color: #212529;
+}
+
+/* Modal */
+.modal-body input[type="file"],
+.modal-body textarea {
+    margin-bottom: 16px;
+}
+
+/* Close Button */
+.btn-close {
+    color: #000;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
