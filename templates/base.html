@@ -10,79 +10,69 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center">
-        {% block header %}
-        <h1>Welcome to the Bullying Whistleblower App</h1>
-        {% endblock header %}
-
-        {% if user.is_authenticated %}
-        <a href="logout">
-            <button>Logout</button>
-        </a>
-        {% else %}
-        <a href="{% provider_login_url 'google' %}?next=/profile">
-            <i class="bi bi-person-circle"></i> Login
-        </a>
-        {% endif %}
+<body>
+    <div class="absolute bg">
+        <div class="absolute inset-0 justify-center">
+            <div class="bg-shape1 bg-teal opacity-50 bg-blur"></div>
+            <div class="bg-shape2 bg-primary opacity-50 bg-blur"></div>
+            <div class="bg-shape1 bg-purple opacity-50 bg-blur"></div>
+        </div>
     </div>
 
-    {% block content %}
-    <!-- This is where child template content will be injected -->
-    {% endblock content %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center header">
+            {% block header %}
+            <h1>Welcome to the Bullying Whistleblower App</h1>
+            {% endblock header %}
 
-    <!-- Report Button -->
-    <div class="text-center mt-4">
-        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">
-            Report an Issue
-        </button>
+            {% if user.is_authenticated %}
+            <a href="logout">
+                <button>Logout</button>
+            </a>
+            {% else %}
+            <a href="{% provider_login_url 'google' %}?next=/profile">
+                <i class="bi bi-person-circle"></i> Login
+            </a>
+            {% endif %}
+        </div>
+
+        {% block content %}
+        <!-- This is where child template content will be injected -->
+        {% endblock content %}
+
+        <!-- Report Button -->
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reportModal">
+                Report an Issue
+            </button>
+        </div>
     </div>
-</div>
 
-<!-- Report Modal -->
-<!-- <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Submit Report</button>
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <!-- <div class="mb-3">
+                            <label for="fileUpload" class="form-label">Upload File</label>
+                            <input class="form-control" type="file" id="fileUpload" name="file" accept=".txt, .pdf, .jpg">
+                        </div>
+                        <div class="mb-3">
+                            <label for="descriptionText" class="form-label">Description</label>
+                            <textarea class="form-control" id="descriptionText" name="description" rows="3"></textarea>
+                        </div> -->
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div> -->
-<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <!-- <div class="mb-3">
-                        <label for="fileUpload" class="form-label">Upload File</label>
-                        <input class="form-control" type="file" id="fileUpload" name="file" accept=".txt, .pdf, .jpg">
-                    </div>
-                    <div class="mb-3">
-                        <label for="descriptionText" class="form-label">Description</label>
-                        <textarea class="form-control" id="descriptionText" name="description" rows="3"></textarea>
-                    </div> -->
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit Report</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+</body>
