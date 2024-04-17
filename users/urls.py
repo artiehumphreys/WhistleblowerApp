@@ -5,6 +5,7 @@ urlpatterns = [
     path('ajax/change_status/', views.change_file_status, name='change_file_status'),
     path("", views.profile, name ="login"),
     path("logout/", views.logout_view, name="logout"),
+    path('profile/delete_submission/<int:submission_id>/', views.delete_submission, name='delete_submission'),
     # path("logout/", views.logout_view, name="logout"),
     # path("",views.redirect)
 ]
