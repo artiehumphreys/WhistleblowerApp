@@ -38,7 +38,7 @@ class UploadedFile(models.Model):
     user = models.CharField(max_length=255, default="No User Data Available")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
     note = models.TextField(blank=True, null=True)
-    tag = models.CharField(max_length=30, choices=TAG_CHOICES, default='other')
+    tag = models.CharField(max_length=30, choices=TAG_CHOICES)
 
     def __str__(self):
         return self.title

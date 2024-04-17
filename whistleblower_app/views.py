@@ -45,7 +45,8 @@ def file_upload_view(request):
                         'description': uploaded_file.description,
                         'status': 'new',
                         'note': '',
-                        'submission_id': str(uploaded_file.submission.id)
+                        'submission_id': str(uploaded_file.submission.id),
+                        'tag': uploaded_file.tag
                     }
                 }
                 s3.upload_fileobj(file, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
