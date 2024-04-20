@@ -19,7 +19,8 @@
             <button>Logout</button>
         </a>
         {% else %}
-        <a href="{% provider_login_url 'google' %}?next=/profile">
+        {% comment %} provider_login_url 'google'  ?next=/profile{% endcomment %}
+        <a href="{% url 'login_page' %}">
             <i class="bi bi-person-circle"></i> Login
         </a>
         {% endif %}
