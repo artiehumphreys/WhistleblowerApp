@@ -24,6 +24,8 @@ def profile(request):
             if "uploads/" in file_key:
                 continue
             url = str(file_key).replace(' ', '_').replace('(', '').replace(')', '')
+            idx = url.find('_')
+            url = url [idx+1:]
             metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
             metadata = metadata_response.get('Metadata', {})
             submission_id = metadata.get('submission_id', "Old Files")

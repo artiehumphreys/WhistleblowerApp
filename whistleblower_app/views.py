@@ -49,7 +49,8 @@ def file_upload_view(request):
                         'tag': uploaded_file.tag
                     }
                 }
-                s3.upload_fileobj(file, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
+                file_name = f"{uploaded_file.submission.id}_{file.name}"
+                s3.upload_fileobj(file, 'b29-whistleblower', file_name, ExtraArgs=extra_args)
     else:
         form = UploadFileForm()
     return redirect("/profile/")
