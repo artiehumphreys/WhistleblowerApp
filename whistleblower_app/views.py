@@ -54,6 +54,7 @@ def file_upload_view(request):
         form = UploadFileForm()
     return render(request, "whistleblower_app/file_upload.html", {'form': form})
 
+
 def list_files(request):
     files = UploadedFile.objects.all()
     return render(request, "users/templates/siteadmin.html", {'files': files})
