@@ -52,7 +52,7 @@ def file_upload_view(request):
                 s3.upload_fileobj(file, 'b29-whistleblower', file.name, ExtraArgs=extra_args)
     else:
         form = UploadFileForm()
-    return render(request, "whistleblower_app/file_upload.html", {'form': form})
+    return redirect("/profile/")
 
 
 def list_files(request):

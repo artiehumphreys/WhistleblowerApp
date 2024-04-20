@@ -95,7 +95,7 @@
                     </div>
                     {% endif %}
                     <!-- Form for file deletion -->
-                    <form id="delete-form-{{ file.submission_id }}" method="post" action="{% url 'delete_submission' submission_id %}">
+                    <form id="delete-form-{{ file.submission_id }}" method="post" action="{% url 'delete_submission' submission_data.0 %}">
                         {% csrf_token %}
                         <input type="submit" value="Delete Submission" onclick="confirmDelete('{{ file.submission_id }}')">
                     </form>
