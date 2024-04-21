@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -16,7 +16,7 @@ def login_logic(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return render(request, 'auth_app/profile.html')
+            return render(request, 'users/profile.html')
         else:
             return HttpResponse("Invalid username or password.", status=401)
     else:
@@ -32,7 +32,7 @@ def register_view(request):
         
         user = User.objects.create_user(username=username, password=password)
         user.save()
-        return render(request, 'auth_app/login.html')
+        return redirect('login_page')
     else:
         return render(request, 'auth_app/newaccount.html')  
 def create_new_view(request):
