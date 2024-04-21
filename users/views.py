@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
@@ -14,6 +14,20 @@ from whistleblower_app.models import UploadedFile, Submission
 
 def login_view(request):
     return render(request, 'users/login.html')
+
+@require_http_methods(["GET", "POST"])
+def login_logic(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('profile')
+        else:
+            return HttpResponse("Invalid username or password.", status=401)
+    else:
+        return render(request, 'login.html')
 
 def create_new_view(request):
     return render(request, 'users/newaccount.html')
