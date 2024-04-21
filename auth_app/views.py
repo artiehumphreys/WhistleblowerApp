@@ -7,6 +7,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
 
 
 def login_view(request):
@@ -38,6 +39,10 @@ def register_view(request):
             return render(request, 'auth_app/newaccount.html', {'email_error': 'Please enter a valid email address.'})
         if User.objects.filter(username=username).exists():
             return render(request, 'auth_app/newaccount.html', {'user_error': 'Username is either already taken or invalid. Please consider entering a new username'})
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            return render(request, 'auth_app/newaccount.html', {'pass_error': e.messages[0]})
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
         return redirect('login_page')

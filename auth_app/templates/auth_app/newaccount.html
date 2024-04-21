@@ -2,6 +2,7 @@
 {% load socialaccount %}
 
 <html lang="en">
+<title>Create New Account</title>
 <head>
         {% bootstrap_css %}
         {% bootstrap_javascript %}
@@ -39,6 +40,9 @@
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
+                            {% if pass_error %}
+                                    <div class="alert alert-danger">{{ pass_error }}</div>
+                            {% endif %}
                             <button type="submit" class="btn btn-primary">Create Account</button>
                         </form>
                     </div>
