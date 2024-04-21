@@ -61,7 +61,7 @@
     {% for submission_data, files in submissions.items %}
     <li class="dropdown-container">
         <div class="dropdown-title" onclick="toggleDropdown(this)">
-            Submission ID: {{ submission_data.1 }}
+            {{ submission_data.1 }}
         </div>
         <div class="dropdown-content">
             {% for file in files %}
