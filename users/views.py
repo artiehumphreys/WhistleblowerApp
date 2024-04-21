@@ -145,7 +145,7 @@ def delete_submission(request, submission_id):
             if is_site_admin:
                 return render(request, "users/siteadmin.html",{'submissions': dict(submissions)})
             else:
-                return render(request, "users/profile.html", {'submissions': dict(submissions), 'form': UploadFileForm})
+                return redirect('login')
         
         except ClientError as e:
             error_message = e.response['Error']['Message']
