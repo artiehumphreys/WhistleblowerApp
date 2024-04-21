@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.conf import settings
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.forms import UserCreationForm
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 
 def login_view(request):
     return render(request, 'auth_app/login.html')
@@ -16,9 +20,9 @@ def login_logic(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return render(request, 'users/profile.html')
+            return redirect('login')
         else:
-            return HttpResponse("Invalid username or password.", status=401)
+            return render(request, 'auth_app/login.html', {'user_error': 'The email and password you entered did not match our records. Please double-check and try again.'})
     else:
         return render(request, 'auth_app/login.html')
     
@@ -27,14 +31,19 @@ def register_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        email = request.POST.get('email')
+        try:
+            validate_email(email)
+        except ValidationError:
+            return render(request, 'auth_app/newaccount.html', {'email_error': 'Please enter a valid email address.'})
         if User.objects.filter(username=username).exists():
-            return HttpResponse("Username already taken.", status=400)
-        
-        user = User.objects.create_user(username=username, password=password)
+            return render(request, 'auth_app/newaccount.html', {'user_error': 'Username is either already taken or invalid. Please consider entering a new username'})
+        user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
         return redirect('login_page')
     else:
-        return render(request, 'auth_app/newaccount.html')  
+        form = UserCreationForm()
+        return render(request, 'auth_app/newaccount.html', {'form': form})
 def create_new_view(request):
     return render(request, 'auth_app/newaccount.html')
 

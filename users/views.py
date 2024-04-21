@@ -14,17 +14,6 @@ from django.http import HttpResponse
 
 
 def profile(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        if username and password:
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-            else:
-                return HttpResponse("Unable to validate login information.", status=401)
-        else:
-            return HttpResponse("Username and password required.", status=400)
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     response = s3.list_objects_v2(Bucket='b29-whistleblower')
     submissions = defaultdict(list)
