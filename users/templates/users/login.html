@@ -1,4 +1,6 @@
 {% load bootstrap5 %}
+{% load socialaccount %}
+
 <html lang="en">
 <head>
         {% bootstrap_css %}
@@ -28,7 +30,7 @@
                         </form>
                         <hr>
                         <div class="text-center">
-                            <a href="redirect.html" class="btn btn-secondary">
+                            <a href="{% provider_login_url 'google' %}?next=/profile" class="btn btn-secondary">
                                 <i class="bi bi-google"></i> Login with Google
                             </a>
                         </div>
