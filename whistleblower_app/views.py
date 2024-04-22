@@ -22,22 +22,35 @@ def index(request):
 
 def file_upload_view(request):
     username = request.user.username if request.user.is_authenticated else "Anonymous"
+
     if request.method == 'POST':
-        if not request.FILES:
-            content = 'No File Attached'
-            default_file = ContentFile(content.encode(), name='default.txt')
-            request.FILES['file'] = default_file
-        form = UploadFileForm(request.POST, request.FILES, username)
+        form = UploadFileForm(request.POST, request.FILES)
+
         if form.is_valid():
             submission = Submission(user=username)
             submission.save()
-            s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-            for file in form.cleaned_data['file']:
-                uploaded_file = form.save(commit=False)
-                uploaded_file.submission = submission
-                uploaded_file.file = file
-                uploaded_file.user = username
+
+            files = request.FILES.getlist('file[]')
+            if not files:
+                content = 'No File Attached'
+                default_file = ContentFile(content.encode(), name='default.txt')
+                files = [default_file]
+
+            s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                              aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+
+            for file in files:
+                uploaded_file = UploadedFile(
+                    submission=submission,
+                    file=file,
+                    user=username,
+                    title=form.cleaned_data['title'],
+                    description=form.cleaned_data['description'],
+                    tag=form.cleaned_data['tag'],
+                    status='new'
+                )
                 uploaded_file.save()
+
                 extra_args = {
                     'Metadata': {
                         'title': uploaded_file.title,
@@ -45,15 +58,17 @@ def file_upload_view(request):
                         'description': uploaded_file.description,
                         'status': 'new',
                         'note': '',
-                        'submission_id': str(uploaded_file.submission.id),
+                        'submission_id': str(submission.id),
                         'tag': uploaded_file.tag
                     }
                 }
-                file_name = f"{uploaded_file.submission.id}_{file.name}"
-                s3.upload_fileobj(file, 'b29-whistleblower', file_name, ExtraArgs=extra_args)
-    else:
-        form = UploadFileForm()
-    return redirect("/profile/")
+                file_name = f"{submission.id}_{file.name}"
+                s3.upload_fileobj(file.file, 'b29-whistleblower', file_name, ExtraArgs=extra_args)
+
+        if username == 'Anonymous':
+            return redirect('index')
+
+        return redirect("/profile/")
 
 
 def list_files(request):
