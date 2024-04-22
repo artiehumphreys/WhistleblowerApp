@@ -31,9 +31,8 @@ def profile(request):
             metadata = metadata_response.get('Metadata', {})
             submission_id = metadata.get('submission_id', "Old Files")
             if submission_id != None and request.user.username == metadata.get('username'):
-                submissions[(submission_id, metadata.get('title'))].append({
+                submissions[(submission_id, metadata.get('title'), metadata.get('username', 'No User Data Available'))].append({
                     'url': url,
-                    'name': metadata.get('title', file_key),
                     'username': metadata.get('username', 'No User Data Available'),
                     'description': metadata.get('description', 'No Description Available.'),
                     'status': metadata.get('status', 'In Progress'),
@@ -41,9 +40,8 @@ def profile(request):
                     'tag': metadata.get('tag', 'Other')
                 })
             elif (is_site_admin and submission_id != None):
-                submissions[(submission_id, metadata.get('title'))].append({
+                submissions[(submission_id, metadata.get('title'), metadata.get('username', 'No User Data Available'))].append({
                     'url': url,
-                    'name': metadata.get('title', file_key),
                     'username': metadata.get('username', 'No User Data Available'),
                     'description': metadata.get('description', 'No Description Available.'),
                     'status': metadata.get('status', 'In Progress'),

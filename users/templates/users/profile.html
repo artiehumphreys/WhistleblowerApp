@@ -10,13 +10,6 @@
 {% block content %}
 <style>
 
-    .dropdown-title {
-        cursor: pointer;
-        padding: 5px;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-    }
-
     .media-body p {
         margin-bottom: 0;
     }
@@ -41,10 +34,6 @@
         flex-grow: 1;
     }
 
-    .dropdown-content-inner .file-info h4 {
-        margin: 0 0 5px 0;
-    }
-
     .dropdown-content-inner .file-display {
         flex-shrink: 0;
         margin-left: 10px;
@@ -55,10 +44,6 @@
         height: auto;
     }
 </style>
-
-<div class="d-flex justify-content-between align-items-center mb-5">
-    <!-- <p class="mt-3">Welcome, {{user.get_full_name}}</p> -->
-</div>
 <body class="bg-light">
     {% if submissions %}
     <div class="my-3 p-3 bg-white rounded box-shadow">
@@ -67,8 +52,9 @@
         {% for submission_data, files in submissions.items %}
         <li class="dropdown-container media text-muted pt-3">
             <div class="rounded box-shadow" onclick="toggleDropdown(this)">
-                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                    <strong class="d-block text-gray-dark"> {{ submission_data.1 }} </strong>
+                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray h4">
+                    <strong class="d-block text-gray-dark h4"> {{ submission_data.2 }} </strong>
+                    {{ submission_data.1 }}
                 </p>
             </div>
             <div class="dropdown-content">
@@ -76,11 +62,11 @@
                 <div class="dropdown-content-inner">
                     <div class="file-info flex">
                         {% comment %} <h4>File Name: {{ file.url }}</h4> {% endcomment %}
-                        <div class="d-flex align-items-center mb-3">
+                        {% comment %} <div class="d-flex align-items-center mb-3">
                             <h5 class="me-2 mb-0">Uploaded By:</h5>
                             <p class="mb-0">{{ file.username }}</p>
                         </div>
-                        <br>
+                        <br> {% endcomment %}
                         <div class="d-flex align-items-center mb-3">
                             <h5 class="me-2 mb-0">Description:</h5>
                             <p class="mb-0">{{ file.description }}</p>
