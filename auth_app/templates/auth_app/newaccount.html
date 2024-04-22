@@ -1,0 +1,54 @@
+{% load bootstrap5 %}
+{% load socialaccount %}
+
+<html lang="en">
+<title>Create New Account</title>
+<head>
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+</head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- Include jQuery and Bootstrap Bundle JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Create New Account</h3>
+                        <form action="{% url 'create_new' %}" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="text" class="form-control" id="email" name="email" required>
+                                {% if email_error %}
+                                    <div class="alert alert-danger">{{ email_error }}</div>
+                                {% endif %}
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                                {% if user_error %}
+                                    <div class="alert alert-danger">{{ user_error }}</div>
+                                {% endif %}
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            {% if pass_error %}
+                                    <div class="alert alert-danger">{{ pass_error }}</div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary">Create Account</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
