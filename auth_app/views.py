@@ -9,10 +9,6 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 
-
-def login_view(request):
-    return render(request, 'auth_app/login.html')
-
 @require_http_methods(["GET", "POST"])
 def login_logic(request):
     if request.method == 'POST':
@@ -49,7 +45,5 @@ def register_view(request):
     else:
         form = UserCreationForm()
         return render(request, 'auth_app/newaccount.html', {'form': form})
-def create_new_view(request):
-    return render(request, 'auth_app/newaccount.html')
 
 # Create your views here.
