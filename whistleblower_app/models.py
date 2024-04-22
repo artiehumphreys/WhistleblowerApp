@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 import uuid
+import os
 
 
 def generate_unique_id():
