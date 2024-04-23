@@ -57,7 +57,7 @@ def file_upload_view(request):
                         'title': uploaded_file.title,
                         'username': username,
                         'description': uploaded_file.description,
-                        'status': 'new',
+                        'status': 'New',
                         'note': '',
                         'submission_id': str(submission.id),
                         'tag': uploaded_file.tag,

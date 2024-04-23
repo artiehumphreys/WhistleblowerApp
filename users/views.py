@@ -6,11 +6,12 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from botocore.exceptions import ClientError
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from whistleblower_app.forms import UploadFileForm
 from whistleblower_app.models import UploadedFile, Submission
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponse
+
 
 
 def profile(request):
@@ -18,7 +19,7 @@ def profile(request):
     response = s3.list_objects_v2(Bucket='b29-whistleblower')
     submissions = defaultdict(list)
     is_site_admin = request.user.groups.filter(name="Site Admin").exists()  # Check once before the loop
-
+    sort_key = request.GET.get('sort', 'default')
     if 'Contents' in response:
         for item in response['Contents']:
             file_key = item['Key']
@@ -50,10 +51,17 @@ def profile(request):
                     'tag': metadata.get('tag', 'Other'),
                     'time': metadata.get('time', 'No Time Data Available.')
                 })
-    if is_site_admin:
-        return render(request, "users/siteadmin.html",{'submissions': dict(submissions)})
+
+    if sort_key == 'status':
+        submissions = OrderedDict(sorted(submissions.items(), key=lambda x: x[1][0]['status']))
+    elif sort_key == 'date':
+        submissions = OrderedDict(sorted(submissions.items(), key=lambda x: x[1][0]['time']))
     else:
-        return render(request, "users/profile.html", {'submissions': dict(submissions), 'form': UploadFileForm})
+        submissions = OrderedDict(submissions)
+    if is_site_admin:
+        return render(request, "users/siteadmin.html",{'submissions': submissions})
+    else:
+        return render(request, "users/profile.html", {'submissions': submissions, 'form': UploadFileForm})
 
 @csrf_exempt
 @require_http_methods(["POST"])

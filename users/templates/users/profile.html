@@ -68,11 +68,13 @@
                     <label for="sort-by" class="col-form-label">Sort Reports By:</label>
                 </div>
                 <div class="col-auto mb-0 mt-0">
-                    <select class="form-select" id="sort-by" name="sort" onchange="document.getElementById('sort-form').submit();">
-                        <option value="default" selected>Default</option>
-                        <option value="status">Status</option>
-                        <option value="date">Date</option>
-                    </select>
+                    <form method="GET" action="">
+                        <select class="form-select" id="sort-by" name="sort" onchange="this.form.submit();">
+                            <option value="default" selected>Default</option>
+                            <option value="status">Status</option>
+                            <option value="date">Date</option>
+                        </select>
+                    </form>
                 </div>
             </form>
         </div>        
