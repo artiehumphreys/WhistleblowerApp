@@ -51,7 +51,6 @@ def profile(request):
                     'time': metadata.get('time', 'No Time Data Available.')
                 })
     if is_site_admin:
-        print(dict(submissions))
         return render(request, "users/siteadmin.html",{'submissions': dict(submissions)})
     else:
         return render(request, "users/profile.html", {'submissions': dict(submissions), 'form': UploadFileForm})
