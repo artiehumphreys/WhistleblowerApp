@@ -51,7 +51,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
+                <form method="post" id = "reportForm" enctype="multipart/form-data" action="{% url 'upload' %}">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
@@ -80,10 +80,36 @@
                         </select>
                     </div>
                     <div class="d-flex justify-content-beginning">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>            
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const reportForm = document.getElementById('reportForm');
+        const submitButton = document.getElementById('submitButton');
+        const inputs = reportForm.querySelectorAll('input, textarea, select');
+    
+        function updateButtonState() {
+            submitButton.disabled = !reportForm.checkValidity();
+        }
+    
+        inputs.forEach(input => {
+            input.addEventListener('change', updateButtonState);
+            input.addEventListener('keyup', updateButtonState);
+        });
+    
+        reportForm.addEventListener('submit', function () {
+            var modalElement = document.getElementById('reportModal');
+            var modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance._config.backdrop = 'static';
+            modalInstance._config.keyboard = false;
+            const closeButton = modalElement.querySelector('.btn-close');
+            closeButton.disabled = true;
+            submitButton.disabled = true;
+        });
+    });    
+</script>
