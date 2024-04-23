@@ -54,13 +54,29 @@
     {% if submissions %}
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h3 class="border-bottom border-gray pb-2 mb-0">Your Previous Reports</h3>
-        <div class="p-3 mb-3  rounded">
-            <p class="text-muted" style="margin-bottom: 0;">
-                <i class="fas fa-info-circle mr-2 text-primary"></i>
-                Hover over and click on a report to view its details. Click the report once again to collapse it.
-            </p>
+        <div class="p-3 mb-3 rounded d-flex align-items-center justify-content-between">
+            <div>
+                <p class="text-muted mb-0">
+                    <i class="fas fa-info-circle mr-2 text-primary"></i>
+                    Hover over and click on a report to view its details. Click the report again to collapse it.
+                </p>
+            </div>
         </div>
-        <ul style="list-style-type:none;" class="my-3 p-3 bg-white rounded box-shadow">
+        <div class="my-3 px-3 bg-white rounded box-shadow mb-0 mt-0">
+            <form id="sort-form" action="" method="GET" class="row g-3 align-items-center">
+                <div class="col-auto mb-0 mt-0">
+                    <label for="sort-by" class="col-form-label">Sort Reports By:</label>
+                </div>
+                <div class="col-auto mb-0 mt-0">
+                    <select class="form-select" id="sort-by" name="sort" onchange="document.getElementById('sort-form').submit();">
+                        <option value="default" selected>Default</option>
+                        <option value="status">Status</option>
+                        <option value="date">Date</option>
+                    </select>
+                </div>
+            </form>
+        </div>        
+        <ul style="list-style-type:none;" class="my-3 px-3 bg-white rounded box-shadow">
             {% for submission_data, files in submissions.items %}
             <li class="dropdown-container media text-muted pt-3">
                 <div class="rounded box-shadow" onclick="toggleDropdown(this)">
