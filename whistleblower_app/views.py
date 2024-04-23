@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import logout
 from users import templates
+import datetime
 import tempfile
 import os
 
@@ -60,7 +61,7 @@ def file_upload_view(request):
                         'note': '',
                         'submission_id': str(submission.id),
                         'tag': uploaded_file.tag,
-                        'time': uploaded_file.uploaded_at
+                        'time': uploaded_file.uploaded_at.strftime("%Y-%m-%d %I:%M %p")
                     }
                 }
                 file_name = f"{submission.id}_{file.name}"
