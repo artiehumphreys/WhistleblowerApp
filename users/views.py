@@ -37,7 +37,8 @@ def profile(request):
                     'description': metadata.get('description', 'No Description Available.'),
                     'status': metadata.get('status', 'In Progress'),
                     'note': metadata.get('note', ''),
-                    'tag': metadata.get('tag', 'Other')
+                    'tag': metadata.get('tag', 'Other'),
+                    'time': metadata.get('time', 'No Time Data Available.')
                 })
             elif (is_site_admin and submission_id != None):
                 submissions[(submission_id, metadata.get('title'), metadata.get('username', 'No User Data Available'))].append({
@@ -46,7 +47,8 @@ def profile(request):
                     'description': metadata.get('description', 'No Description Available.'),
                     'status': metadata.get('status', 'In Progress'),
                     'note': metadata.get('note', ''),
-                    'tag': metadata.get('tag', 'Other')
+                    'tag': metadata.get('tag', 'Other'),
+                    'time': metadata.get('time', 'No Time Data Available.')
                 })
     if is_site_admin:
         print(dict(submissions))

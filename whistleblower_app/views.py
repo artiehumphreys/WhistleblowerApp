@@ -59,7 +59,8 @@ def file_upload_view(request):
                         'status': 'new',
                         'note': '',
                         'submission_id': str(submission.id),
-                        'tag': uploaded_file.tag
+                        'tag': uploaded_file.tag,
+                        'time': uploaded_file.uploaded_at
                     }
                 }
                 file_name = f"{submission.id}_{file.name}"

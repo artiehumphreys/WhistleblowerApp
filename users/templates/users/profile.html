@@ -45,7 +45,9 @@
     }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 <body class="bg-light">
     {% if submissions %}
@@ -85,6 +87,11 @@
                             <p class="mb-0">{{ file.status }}</p>
                         </div>
                         <br>
+                        <div class="d-flex align-items-center mb-3">
+                            <h5 id="status-display" class="me-2 mb-0">Uploaded At:</h5>
+                            <p class="mb-0">{{ file.time }}</p>
+                        </div>
+                        <br>
                         {% if file.note %}
                         <div class="d-flex align-items-center mb-3">
                             <h5 id="note-display" class="me-2 mb-0">Note:</h5>
@@ -92,21 +99,42 @@
                         </div>
                         {% endif %}
                         <!-- Form for file deletion -->
-                        <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ file.submission_id }}')">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal" data-fileid="{{ submission_data.0 }}">
                             <i class="fas fa-trash-alt"></i> Delete Submission
-                        </button>
+                        </button>                        
+                        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                                    <form id="delete-form-{{ submission_data.0 }}" method="post" action="{% url 'delete_submission' submission_data.0 %}">
+                                        {% csrf_token %}
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                        <div class="modal-body">
+                                        Are you sure you want to delete this file?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete File</button>
+                                        </div>
+                                    </form>
+                              </div>
+                            </div>
+                          </div>
                     </div>
                     <div class="file-display text-center mb-4">
                         {% if '.pdf' in file.url|lower %}
                         <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                            type="application/pdf" style="width=300%; height=500%;">
+                            type="application/pdf" style="width:100%; height:32.5vh;">
                         </object>
                         {% elif '.jpg' in file.url|lower %}
                         <img src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                            style="width: 60%; height: auto; max-width: 600px;">
+                            style="width: 60%; height: 100%; max-width: 600px;">
                         {% elif '.txt' in file.url|lower %}
                         <embed src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                            style="width: 75%; height: 500px;"></embed>
+                            style="width: 75%; height: 32.5vh;"></embed>
                         {% else %}
                         <h5>Unable to Display Content</h5>
                         {% endif %}
@@ -137,16 +165,20 @@
     }
 
     // Function to confirm deletion
+    $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var fileId = button.data('fileid')
+        var modal = $(this)
+        modal.find('.modal-title').text('Confirm Delete Submission ' + fileId)
+        modal.find('#confirmDeleteButton').off('click').on('click', function() {
+            confirmDelete(fileId); 
+            modal.modal('hide');
+        });
+    });
+    
     function confirmDelete(fileId) {
-        event.preventDefault();
-        const deleteForm = document.getElementById(`delete-form-${fileId}`);
-        console.log('hi');
-        if (confirm('Are you sure you want to delete this file?')) {
-            console.log('deleting form');
-            deleteForm.submit();
-        } else {
-            return false;
-        }
+        var deleteForm = document.getElementById(`delete-form-${fileId}`);
+        deleteForm.submit();
     }
 </script>
 {% endif %}
