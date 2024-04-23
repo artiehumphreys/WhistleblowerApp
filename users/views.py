@@ -11,6 +11,8 @@ from whistleblower_app.forms import UploadFileForm
 from whistleblower_app.models import UploadedFile, Submission
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 def profile(request):
@@ -50,11 +52,23 @@ def profile(request):
                     'tag': metadata.get('tag', 'Other'),
                     'time': metadata.get('time', 'No Time Data Available.')
                 })
+    submissions_list = list(submissions.items())
+    paginator = Paginator(submissions_list, 5)  # Show 5 submissions per page
+    page = request.GET.get('page')
+
+    try:
+        submissions = paginator.page(page)
+    except PageNotAnInteger:
+        submissions = paginator.page(1)
+    except EmptyPage:
+        submissions = paginator.page(paginator.num_pages)
+        template = "users/siteadmin.html" if is_site_admin else "users/profile.html"
     if is_site_admin:
-        print(dict(submissions))
         return render(request, "users/siteadmin.html",{'submissions': dict(submissions)})
     else:
         return render(request, "users/profile.html", {'submissions': dict(submissions), 'form': UploadFileForm})
+
+
 
 @csrf_exempt
 @require_http_methods(["POST"])
