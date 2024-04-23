@@ -51,17 +51,21 @@ def profile(request):
                     'tag': metadata.get('tag', 'Other'),
                     'time': metadata.get('time', 'No Time Data Available.')
                 })
-
+    status_order = {
+        'New': 1,
+        'In Progress': 2,
+        'Resolved': 3
+    }
     if sort_key == 'status':
-        submissions = OrderedDict(sorted(submissions.items(), key=lambda x: x[1][0]['status']))
+        submissions = OrderedDict(sorted(submissions.items(), key=lambda x: status_order.get(x[1][0]['status'], 999)))
     elif sort_key == 'date':
-        submissions = OrderedDict(sorted(submissions.items(), key=lambda x: x[1][0]['time']))
+        submissions = OrderedDict(sorted(submissions.items(), key=lambda x: x[1][0]['time'])[::-1])
     else:
         submissions = OrderedDict(submissions)
     if is_site_admin:
-        return render(request, "users/siteadmin.html",{'submissions': submissions})
+        return render(request, "users/siteadmin.html",{'submissions': submissions, 'selected_sort': sort_key})
     else:
-        return render(request, "users/profile.html", {'submissions': submissions, 'form': UploadFileForm})
+        return render(request, "users/profile.html", {'submissions': submissions, 'selected_sort': sort_key, 'form': UploadFileForm})
 
 @csrf_exempt
 @require_http_methods(["POST"])

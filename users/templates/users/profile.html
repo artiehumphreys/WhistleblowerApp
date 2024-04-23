@@ -68,13 +68,12 @@
                     <label for="sort-by" class="col-form-label">Sort Reports By:</label>
                 </div>
                 <div class="col-auto mb-0 mt-0">
-                    <form method="GET" action="">
-                        <select class="form-select" id="sort-by" name="sort" onchange="this.form.submit();">
-                            <option value="default" selected>Default</option>
-                            <option value="status">Status</option>
-                            <option value="date">Date</option>
-                        </select>
-                    </form>
+                    <select class="form-select" id="sort-by" name="sort" onchange="this.form.submit();">
+                        <option value="default" {% if selected_sort == 'default' %}selected{% endif %}>Default</option>
+                        <option value="status" {% if selected_sort == 'status' %}selected{% endif %}>Status</option>
+                        <option value="date" {% if selected_sort == 'date' %}selected{% endif %}>Date</option>
+                    </select>
+                    
                 </div>
             </form>
         </div>        
