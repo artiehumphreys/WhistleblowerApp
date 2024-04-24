@@ -28,68 +28,79 @@
             <h1 id="title3" class="title">Yet Another Title</h1> -->
             {% endblock header %}
 
-            {% if user.is_authenticated %}
-            <a href="logout">
-                <button class="btn-logout">Logout</button>
-            </a>
-            {% else %}
-            <a href="{% provider_login_url 'google' %}?next=/profile" class="btn-container-login">
-                <i class="bi bi-person-circle btn-login"></i> Login
-            </a>
-            {% endif %}
-        </div>
+        {% if user.is_authenticated %}
+        <a href="logout">
+            <button class="btn btn-logout btn-warning">Logout</button>
+        </a>
 
-        {% block content %}
-        <!-- This is where child template content will be injected -->
-        {% endblock content %}
-
-        
-        <!-- Report Button -->
-        <div class="text-center mt-4 container-btn-report">
-            <button type="button" class="btn btn-warning btn-report" data-bs-toggle="modal" data-bs-target="#reportModal">
-                Report an Issue
-            </button>
-        </div>
+        {% else %}
+        <a href="{% url 'login_page' %}" class="btn-container-login">
+            <i class="bi bi-person-circle btn-login"></i> Login
+        </a>
+        {% endif %}
     </div>
 
-    <!-- Report Modal -->
-    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" enctype="multipart/form-data" action="{% url 'upload' %}">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <!-- <div class="mb-3">
-                            <label for="fileUpload" class="form-label">Upload File</label>
-                            <input class="form-control" type="file" id="fileUpload" name="file" accept=".txt, .pdf, .jpg">
-                        </div>
-                        <div class="mb-3">
-                            <label for="descriptionText" class="form-label">Description</label>
-                            <textarea class="form-control" id="descriptionText" name="description" rows="3"></textarea>
-                        </div> -->
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit Report</button>
-                    </form>
-                </div>
+    {% block content %}
+    <!-- This is where child template content will be injected -->
+    {% endblock content %}
+    
+    <!-- Report Button -->
+    <div class="text-center mt-4 container-btn-report">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+            Report an Issue
+        </button>
+    </div>
+</div>
+
+{% block footer %}
+<footer class="text-center text-lg-start fixed-bottom" style = "z-index: 1030; background-color: #e0e0e0;">
+    <div class="text-center p-3">
+        <i class="bi bi-exclamation-triangle"></i> Disclaimer: This application is a class project. The system is not monitored, so no real information should be submitted. Click here to learn more.
+    </div>
+  </footer>
+{% endblock footer %}
+
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id = "reportForm" enctype="multipart/form-data" action="{% url 'upload' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Upload File</label>
+                        <input type="file" class="form-control" id="file" name="file[]" multiple accept=".txt, .pdf, .jpg">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tag" class="form-label">Tag</label>
+                        <select class="form-control" id="tag" name="tag" style="-webkit-appearance: listbox !important;" required>
+                            <option value="" selected="true" disabled="disabled">----------</option>
+                            <option value="Physical Bullying">Physical Bullying</option>
+                            <option value="Verbal Abuse">Verbal Abuse</option>
+                            <option value="Cyberbullying">Cyberbullying</option>
+                            <option value="Racist Bullying">Racist Bullying</option>
+                            <option value="Inappropriate Sexual Comments">Inappropriate Sexual Comments</option>
+                            <option value="Social Bullying">Social Bullying</option>
+                            <option value="Emotional Intimidation">Emotional Intimidation</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-beginning">
+                        <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</body>
-
-<!-- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const titles = document.querySelectorAll("#headerContainer h1");
-        let currentIndex = 0;
-
-        setInterval(() => {
-            titles[currentIndex].classList.remove("active");
-            currentIndex = (currentIndex + 1) % titles.length;
-            titles[currentIndex].classList.add("active");
-        }, 3000); // Change title every 3 seconds
-    });
-</script> -->
+</div>
