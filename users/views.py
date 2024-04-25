@@ -107,6 +107,29 @@ def change_file_status(request):
         return JsonResponse({'message': 'Error updating status'}, status=500)
     return JsonResponse({'message': 'Status updated successfully'})
 
+def edit_submission(request, submission_id):
+    if request.method == 'POST':
+        title = request.POST.get('edit_title')
+        description = request.POST.get('edit_description')
+        tag = request.POST.get('edit_tag')
+        
+        try:
+            submission = Submission.objects.get(id=submission_id)
+            
+            submission.title = title
+            submission.description = description
+            submission.tag = tag
+            
+            submission.save()
+            
+            return JsonResponse({'message': 'Submission updated successfully'}, status=200)
+        
+        except Submission.DoesNotExist:
+            return JsonResponse({'message': 'Submission does not exist'}, status=404)
+    
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=400)
+
 def delete_submission(request, submission_id):
     is_site_admin = request.user.groups.filter(name="Site Admin").exists()  # Check once before the loop
     if request.method == 'POST':
