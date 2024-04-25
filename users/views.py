@@ -109,43 +109,33 @@ def change_file_status(request):
 
 def edit_submission(request, submission_id):
     if request.method == 'POST':
-        title = request.POST.get('edit_title')
-        description = request.POST.get('edit_description')
-        tag = request.POST.get('edit_tag')
+        title = request.POST.get('edit-title')
+        description = request.POST.get('edit-description')
+        tag = request.POST.get('edit-tag')
         
+        s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
         try:
-            # Update Submission object
-            submission = Submission.objects.get(id=submission_id)
-            submission.title = title
-            submission.description = description
-            submission.tag = tag
-            submission.save()
-
-            # Initialize S3 client
-            s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-
-            # Retrieve and update associated S3 objects
-            response = s3.list_objects_v2(Bucket='b29-whistleblower', Prefix='uploads/')
-
-            for item in response.get('Contents', []):
-                file_key = item['Key']
-                metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
-                metadata = metadata_response.get('Metadata', {})
-                
-                if metadata.get('submission_id') == str(submission_id):
-                    # Update S3 metadata
-                    metadata['title'] = title
-                    metadata['description'] = description
-                    metadata['tag'] = tag
-
-                    # Copy object with new metadata (effectively updating it)
-                    s3.copy_object(
-                        Bucket='b29-whistleblower',
-                        CopySource={'Bucket': 'b29-whistleblower', 'Key': file_key},
-                        Key=file_key,
-                        Metadata=metadata,
-                        MetadataDirective='REPLACE'
-                    )
+            response = s3.list_objects_v2(Bucket='b29-whistleblower')
+            if 'Contents' in response:
+                for item in response['Contents']: 
+                    file_key = item['Key']
+                    if "uploads/" in file_key:
+                        continue
+                    metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
+                    metadata = metadata_response.get('Metadata', {})
+                    if submission_id == metadata.get('submission_id', "Old Files"):
+                        # print(note)
+                        metadata['title'] = title
+                        metadata['description'] = description
+                        metadata['tag'] = tag
+                        
+                        s3.copy_object(
+                            Bucket='b29-whistleblower', 
+                            CopySource={'Bucket': 'b29-whistleblower', 'Key': file_key},
+                            Key=file_key, 
+                            Metadata=metadata, 
+                            MetadataDirective='REPLACE'
+                        )
 
             return redirect('login')
         
