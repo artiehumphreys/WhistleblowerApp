@@ -28,6 +28,10 @@
         body{
             padding-bottom: 10vh;
         }
+        .reportForm .required:after {
+            content:"*";
+            color:red;
+          }
 </style>
 </head>
 {% block header %}
@@ -61,7 +65,6 @@
                                 <p class="lead">
                                     This Bullying Whistleblower App provides a pivotal platform for reporting instances of bullying within UVA, 
                                     offering a confidential and straightforward way for students, parents, and educators to report incidents. 
-                                    This accessibility encourages timely reporting and intervention, helping to mitigate the effects of bullying quickly. 
                                 </p>
                             </div>
                         </div>
@@ -135,10 +138,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" id = "reportForm" enctype="multipart/form-data" action="{% url 'upload' %}">
+                <form method="post" class="reportForm" id = "reportForm" enctype="multipart/form-data" action="{% url 'upload' %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="title" class="form-label">Title</label>
+                        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="title" name="title" required>
                     </div>
                     <div class="mb-3">
@@ -146,11 +149,11 @@
                         <input type="file" class="form-control" id="file" name="file[]" multiple accept=".txt, .pdf, .jpg">
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
+                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="tag" class="form-label">Tag</label>
+                        <label for="tag" class="form-label">Tag <span class="text-danger">*</span></label>
                         <select class="form-control" id="tag" name="tag" style="-webkit-appearance: listbox !important;" required>
                             <option value="" selected="true" disabled="disabled">----------</option>
                             <option value="Physical Bullying">Physical Bullying</option>
@@ -164,7 +167,7 @@
                         </select>
                     </div>
                     <div class="d-flex justify-content-beginning">
-                        <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+                        <button type="submit" id="submitButton" class="btn btn-primary" disabled>Submit</button>
                     </div>
                 </form>
             </div>            
