@@ -54,34 +54,51 @@
         margin-left: 10px;
     }
 
-    .dropdown-content-inner .file-display object {
-        width: auto;
-        height: auto;
-    }
 </style>
 
 
 
 <ul style="list-style-type:none;">
-    {% for submission_id, files in submissions.items %}
-        <li class="dropdown-container" data-submission-id="{{ submission_id }}" onclick="changeStatusForSubmission('{{ submission_id }}', 'In Progress', '{{ file.status }}', '')">
-            <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission ID: {{ submission_id }}</div>
+    {% for submission_data, files in submissions.items %}
+        <li class="dropdown-container" data-submission-id="{{ submission_data.0 }}">
+            <div class="dropdown-title" onclick="toggleDropdown(event, this)">Submission: {{ submission_data.1 }}</div>
         <div class="dropdown-content">
             {% for file in files %}
             <div class="dropdown-content-inner">
-                <div class="file-info">
-                    <h4>File Name: {{ file.name }}</h4>
-                    <p>Uploaded By: {{ file.username }}</p>
-                    <p>Description: {{ file.description }}</p>
-                    <p id="status-display">Status: {{ file.status }}</p>
-                    <p id="note-display">Note: {{ file.note }}</p>
+                <div class="file-info flex">
+                    {% comment %} <h4>File Name: {{ file.url }}</h4> {% endcomment %}
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 class="me-2 mb-0">Uploaded By:</h5>
+                        <p class="mb-0">{{ file.username }}</p>
+                    </div>
+                    <br>
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 class="me-2 mb-0">Description:</h5>
+                        <p class="mb-0">{{ file.description }}</p>
+                    </div>
+                    <br>
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 class="me-2 mb-0">Type of Bullying:</h5>
+                        <p class="mb-0">{{ file.tag }}</p>
+                    </div>
+                    <br>
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 id="status-display-{{ submission_data.0 }}" class="me-2 mb-0">Status:</h5>
+                        <p class="mb-0">{{ file.status }}</p>
+                    </div>
+                    <br>
+                    {% if file.note|length > 0 %}
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 id="note-display-{{ submission_data.0 }}" class="me-2 mb-0">Note:</h5>
+                        <p class="mb-0">{{ file.note }}</p>
+                    </div>
+                    {% endif %}
+                    <br>
                 </div>
-                <div class="file-display">
+                <div class="file-display text-center mb-4">
                     {% if '.pdf' in file.url|lower %}
                     <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                        type="application/pdf" width="150%" height="150%">
-                        <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank">View
-                            PDF</a>
+                        type="application/pdf" style="width=300%; height=500%;">
                     </object>
                     {% elif '.jpg' in file.url|lower %}
                     <img src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
@@ -90,13 +107,17 @@
                     <embed src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
                         style="width: 75%; height: 500px;"></embed>
                     {% else %}
-                    <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank">Download
-                        File</a>
+                    <h5>Unable to Display Content</h5>
                     {% endif %}
+                    <br>
+                    <div class="mt-3">
+                        <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank" class="btn btn-link">View File in a New Window</a>
+                    </div>
+                    <br>
                 </div>
             </div>
             {% endfor %}
-            <button id="resolveAllButton" class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal" onclick="setSubmissionId(event, {{ submission_id }})">
+            <button id="resolveAllButton" class="status-dropdown btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal" onclick="setSubmissionId(event, '{{ submission_data.0 }}')">
                 Resolve All
             </button>
         </div>
@@ -130,15 +151,18 @@
     let currentSubmissionId = null;
     // JavaScript for dropdown functionality
     function toggleDropdown(event, element) {
+        event.stopPropagation();
         const content = element.nextElementSibling;
-        if (content.style.display === 'block') {
-            content.style.display = 'none';
-        } else {
+        if (content.style.display === 'none' || content.style.display === '') {
             content.style.display = 'block';
+            let submissionId = element.parentNode.getAttribute('data-submission-id');
+            changeStatusForSubmission(submissionId, 'In Progress', '');
+        } else {
+            content.style.display = 'none';
         }
+        event.preventDefault();
     }
-    function changeStatusForSubmission(submissionId, newStatus, oldStatus, note) {
-        if ((newStatus !== oldStatus) && (oldStatus !== 'Resolved')){
+    function changeStatusForSubmission(submissionId, newStatus, note) {
             $.ajax({
                 url: '/profile/ajax/change_status/', 
                 type: 'POST',
@@ -148,15 +172,14 @@
                     'note': note
                 },
                 success: function (response) {
+                    statusId = 'status-display' + submissionId;
+                    noteId = 'note-display' + submissionId;
                     console.log('Status and note updated successfully for submission: ' + submissionId);
-                    document.getElementById("status-display").innerHTML = status
-                    document.getElementById("note-display").innerHTML = note
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     console.error('Error updating status and note:', textStatus, errorThrown);
                 }
             });
-        }
     }
 
 
@@ -170,8 +193,9 @@
             console.error('Submission ID is missing.');
             return;
         }
+        console.log(note);
     
-        changeStatusForSubmission(submissionId, 'Resolved', 'In Progress', note);
+        changeStatusForSubmission(submissionId, 'Resolved', note);
     
         document.getElementById('userNote').value = ''; 
         $('#reportModal').modal('hide');
