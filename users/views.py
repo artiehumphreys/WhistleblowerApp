@@ -114,21 +114,47 @@ def edit_submission(request, submission_id):
         tag = request.POST.get('edit_tag')
         
         try:
+            # Update Submission object
             submission = Submission.objects.get(id=submission_id)
-            
             submission.title = title
             submission.description = description
             submission.tag = tag
-            
             submission.save()
-            
-            return JsonResponse({'message': 'Submission updated successfully'}, status=200)
+
+            # Initialize S3 client
+            s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+
+            # Retrieve and update associated S3 objects
+            response = s3.list_objects_v2(Bucket='b29-whistleblower', Prefix='uploads/')
+
+            for item in response.get('Contents', []):
+                file_key = item['Key']
+                metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
+                metadata = metadata_response.get('Metadata', {})
+                
+                if metadata.get('submission_id') == str(submission_id):
+                    # Update S3 metadata
+                    metadata['title'] = title
+                    metadata['description'] = description
+                    metadata['tag'] = tag
+
+                    # Copy object with new metadata (effectively updating it)
+                    s3.copy_object(
+                        Bucket='b29-whistleblower',
+                        CopySource={'Bucket': 'b29-whistleblower', 'Key': file_key},
+                        Key=file_key,
+                        Metadata=metadata,
+                        MetadataDirective='REPLACE'
+                    )
+
+            return redirect('login')
         
         except Submission.DoesNotExist:
             return JsonResponse({'message': 'Submission does not exist'}, status=404)
     
     else:
         return JsonResponse({'message': 'Invalid request method'}, status=400)
+
 
 def delete_submission(request, submission_id):
     is_site_admin = request.user.groups.filter(name="Site Admin").exists()  # Check once before the loop
