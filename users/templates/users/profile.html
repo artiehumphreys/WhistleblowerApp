@@ -153,6 +153,53 @@
                             </div>
                         </div>
                         {% endfor %}
+                        <button type="button" class="btn btn-warning mx-2 my-2" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmEditModal-{{ submission_data.0 }}"
+                                    data-fileid="{{ submission_data.0 }}" 
+                                    data-title="{{ submission_data.1 }}">
+                                    <i class="bi bi-pen"></i> Edit Submission
+                                </button>
+                                <div class="modal fade confirm-edit-modal" id="confirmEditModal-{{ submission_data.0 }}" tabindex="-1" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmEditModalLabel">Edit Submission: {{ submission_data.1 }}</h5>
+                                                <button type="button" id="closeEditModalButton-{{ submission_data.0 }}" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="edit-form-{{ submission_data.0 }}" method="post" action="{% url 'edit_submission' submission_data.0 %}">
+                                                    {% csrf_token %}
+                                                    <div class="mb-3">
+                                                        <label for="edit-title-{{ submission_data.0 }}" class="form-label">Title:</label>
+                                                        <input type="text" class="form-control" id="edit-title-{{ submission_data.0 }}" name="edit-title" value="{{ submission_data.1 }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="edit-description-{{ submission_data.0 }}" class="form-label">Description:</label>
+                                                        <textarea class="form-control" id="edit-description-{{ submission_data.0 }}" name="edit-description" required>{{ submission_data.3 }}</textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="edit-tag-{{ submission_data.0 }}" class="form-label">Type of Bullying:</label>
+                                                        <select class="form-control" id="edit-tag-{{ submission_data.0 }}" name="edit-tag" style="-webkit-appearance: listbox !important;" required>
+                                                            <option value="Physical Bullying" {% if 'tag' == 'Physical Bullying' %}selected{% endif %}>Physical Bullying</option>
+                                                            <option value="Verbal Abuse" {% if 'tag' == 'Verbal Abuse' %}selected{% endif %}>Verbal Abuse</option>
+                                                            <option value="Cyberbullying" {% if 'tag' == 'Cyberbullying' %}selected{% endif %}>Cyberbullying</option>
+                                                            <option value="Racist Bullying" {% if 'tag' == 'Racist Bullying' %}selected{% endif %}>Racist Bullying</option>
+                                                            <option value="Inappropriate Sexual Comments" {% if 'tag' == 'Inappropriate Sexual Comments' %}selected{% endif %}>Inappropriate Sexual Comments</option>
+                                                            <option value="Social Bullying" {% if 'tag' == 'Social Bullying' %}selected{% endif %}>Social Bullying</option>
+                                                            <option value="Emotional Intimidation" {% if 'tag' == 'Emotional Intimidation' %}selected{% endif %}>Emotional Intimidation</option>
+                                                            <option value="Other" {% if 'tag' == 'Other' %}selected{% endif %}>Other</option>
+                                                        </select>
+                                                    </div>
+                                    
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" id="editButton-{{ submission_data.0 }}" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         <button type="button" class="btn btn-danger mx-2 my-2" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#confirmDeleteModal-{{ submission_data.0 }}"
@@ -232,6 +279,35 @@
             console.error('Delete form not found for ID:', fileId);
         }
     }
+
+    document.querySelectorAll('.confirm-edit-modal').forEach(modal => {
+        modal.addEventListener('show.bs.modal', function (event) {
+            let button = event.relatedTarget;
+            let fileId = button.getAttribute('data-fileid');
+            let title = button.getAttribute('data-title');
+    
+            let modalTitle = modal.querySelector('.modal-title');
+            modalTitle.textContent = 'Edit Submission: ' + title;
+    
+            let editButton = modal.querySelector('#editButton-' + fileId);
+            editButton.addEventListener('click', function() {
+                var button = document.getElementById(`editButton-${fileId}`);
+                button.textContent = "Saving..."
+                button.disabled = true;
+                saveChanges(fileId);
+            });
+        });
+    });
+    
+    function saveChanges(fileId) {
+        var editForm = document.getElementById(`edit-form-${fileId}`);
+        if (editForm) {
+            editForm.submit();
+        } else {
+            console.error('Edit form not found for ID:', fileId);
+        }
+    }
+    
 </script>
 {% endif %}
 
