@@ -100,7 +100,7 @@
                                 Reported By: {{ submission_data.2 }}
                             </p>
                         </div>
-                    <div class="dropdown-content">
+                    <div class="dropdown-content mx-0">
                         {% for file in files %}
                         <div class="dropdown-content-inner">
                             <div class="file-info flex">
@@ -119,20 +119,21 @@
                                     <p class="mb-0">{{ file.status }}</p>
                                 </div>
                                 <br>
-                                <div class="d-flex align-items-center mb-3">
-                                    <h5 id="status-display" class="me-2 mb-0">Uploaded At:</h5>
-                                    <p class="mb-0">{{ file.time }}</p>
-                                </div>
-                                <br>
                                 {% if file.note %}
                                 <div class="d-flex align-items-center mb-3">
                                     <h5 id="note-display" class="me-2 mb-0">Note:</h5>
                                     <p class="mb-0">{{ file.note }}</p>
                                 </div>
+                                <br>
                                 {% endif %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <h5 id="status-display" class="me-2 mb-0">Uploaded At:</h5>
+                                    <p class="mb-0">{{ file.time }}</p>
+                                </div>
+                        
                                 <!-- Form for file deletion -->                           
                             </div>
-                            <div class="file-display text-center mb-2 mt-2">
+                            <div class="file-display text-center mb-2 mt-2 mx-0">
                                 {% if '.pdf' in file.url|lower %}
                                 <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
                                     type="application/pdf" style="width:80%; height:36vh;">
@@ -147,9 +148,12 @@
                                 <h5>Unable to Display Content</h5>
                                 {% endif %}
                                 <br>
+                                {% if 'default.txt' in file.url|lower %}
+                                {% else %}
                                 <div class="mt-2">
                                     <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank" class="btn btn-link">View File in a New Window</a>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}
@@ -200,7 +204,7 @@
                                         </div>
                                     </div>
                                 </div>
-                        <button type="button" class="btn btn-danger mx-2 my-2" 
+                        <button type="button" class="btn btn-danger my-2" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#confirmDeleteModal-{{ submission_data.0 }}"
                                     data-fileid="{{ submission_data.0 }}" 
