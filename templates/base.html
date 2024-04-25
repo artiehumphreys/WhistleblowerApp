@@ -31,8 +31,8 @@
         .reportForm .required:after {
             content:"*";
             color:red;
-          }
-</style>
+        }
+    </style>
 </head>
 {% block header %}
 {% endblock header %}
@@ -40,7 +40,7 @@
 <div class="container mt-2">
     <div class="justify-content-between align-items-center">
         <body class="text-center bg-light">
-            <div class="cover-container d-flex h-50 p-3 mx-auto flex-column">
+            <div class="cover-container scroll-container d-flex h-50 p-3 mx-auto flex-column">
                 <header class="mb-5">
                     <div class="container">
                         <div class="d-flex justify-content-between align-items-center">
@@ -57,50 +57,51 @@
                         </div>
                     </div>
                 </header>
-                <main role="main" class="px-3">
-                    <h1 class="cover-heading mb-3">Report Instances of Bullying Across Grounds</h1>
-                    <div class="container mb-2">
-                        <div class="row justify-content-center">
-                            <div class="col-md-9">
-                                <p class="lead">
-                                    This Bullying Whistleblower App provides a pivotal platform for reporting instances of bullying within UVA, 
-                                    offering a confidential and straightforward way for students, parents, and educators to report incidents. 
-                                </p>
+                <div class = "section">
+                    <main class = "section" role="main" class="px-3">
+                        <h1 class="cover-heading mb-3">Report Instances of Bullying Across Grounds</h1>
+                        <div class="container mb-2">
+                            <div class="row justify-content-center">
+                                <div class="col-md-9">
+                                    <p class="lead">
+                                        This Bullying Whistleblower App provides a pivotal platform for reporting instances of bullying within UVA, 
+                                        offering a confidential and straightforward way for students, parents, and educators to report incidents. 
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {% if user.is_authenticated %}
-                    {% else %}
-                    <div class="container mb-2">
-                        <div class="row justify-content-center">
-                            <div class="col-md-9">
-                                <p class="lead text-danger font-weight-bold">
-                                    You are currently not logged in. Log in or create an account to view all of your previous submissions and see their status in real time.
-                                </p>
+                        {% if user.is_authenticated %}
+                        {% else %}
+                        <div class="container mb-2">
+                            <div class="row justify-content-center">
+                                <div class="col-md-9">
+                                    <p class="lead text-danger font-weight-bold">
+                                        You are currently not logged in. Log in or create an account to view all of your previous submissions and see their status in real time.
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {% endif %}
-                    {% endblock content %} 
-                    <div class="container mb-2">
-                        <div class="d-flex justify-content-center">
-                            <div class="">  
-                                <p class="lead">
-                                    {% if submissions %}
-                                    <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
-                                        Report Another Instance
-                                    </button>
-                                    {% else %}
-                                    <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
-                                        Report an Instance
-                                    </button>
-                                    {% endif %}
-                                </p>
+                        {% endif %}
+                        {% endblock content %} 
+                        <div class="container mb-2">
+                            <div class="d-flex justify-content-center">
+                                <div class="">  
+                                    <p class="lead">
+                                        {% if submissions %}
+                                        <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                            Report Another Instance
+                                        </button>
+                                        {% else %}
+                                        <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                            Report an Instance
+                                        </button>
+                                        {% endif %}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </main>
-            </div>
+                    </main>
+                </div>
         </body>
     </div>
 </div>
@@ -160,7 +161,7 @@
         const reportForm = document.getElementById('reportForm');
         const submitButton = document.getElementById('submitButton');
         const inputs = reportForm.querySelectorAll('input, textarea, select');
-    
+
         function updateButtonState() {
             submitButton.disabled = !reportForm.checkValidity();
         }
