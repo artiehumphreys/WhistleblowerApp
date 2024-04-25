@@ -19,7 +19,7 @@ def add_uuid_field(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('whistleblower_app', '0008_alter_uploadedfile_tag'),  # Adjust according to your actual dependency.
+        ('whistleblower_app', '0008_alter_uploadedfile_tag'), 
     ]
 
     operations = [
