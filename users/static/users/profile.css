@@ -51,5 +51,12 @@
 
 body{
     padding-bottom: 10vh;
-    overflow: hidden;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.modal{
+    z-index: 9999;
 }
