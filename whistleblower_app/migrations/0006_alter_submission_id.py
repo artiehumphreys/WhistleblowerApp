@@ -14,6 +14,7 @@ def extend_postgresql_uuid(sender, connection, **kwargs):
 def apply_migration(apps, schema_editor):
     db_alias = schema_editor.connection.alias
     if 'postgresql' in db_alias:
+        schema_editor.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
         schema_editor.execute('ALTER TABLE whistleblower_app_submission ADD COLUMN new_id UUID DEFAULT uuid_generate_v4();')
         schema_editor.execute('UPDATE whistleblower_app_submission SET new_id = uuid_generate_v4();')
         schema_editor.execute('ALTER TABLE whistleblower_app_submission DROP COLUMN id CASCADE;')
