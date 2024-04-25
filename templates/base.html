@@ -9,46 +9,75 @@
     {% bootstrap_javascript %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
-
-<body>
-    <!-- <div class="absolute bg">
-        <div class="absolute inset-0 justify-center">
-            <div class="bg-shape1 bg-teal opacity-50 bg-blur"></div>
-            <div class="bg-shape2 bg-primary opacity-50 bg-blur"></div>
-            <div class="bg-shape3 bg-purple opacity-50 bg-blur"></div>
-            <div class="bg-shape2 bg-green opacity-50 bg-blur"></div>
-        </div>
-    </div> -->
-
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center header" id= "headerContainer">
-            {% block header %}
-            <h1 id="title1" class="title active">Welcome to the Bullying Whistleblower App</h1>
-            <!-- <h1 id="title2" class="title">Another Title</h1>
-            <h1 id="title3" class="title">Yet Another Title</h1> -->
-            {% endblock header %}
-
-        {% if user.is_authenticated %}
-        <a href="logout">
-            <button class="btn btn-logout btn-warning">Logout</button>
-        </a>
-
-        {% else %}
-        <a href="{% url 'login_page' %}" class="btn-container-login">
-            <i class="bi bi-person-circle btn-login"></i> Login
-        </a>
-        {% endif %}
-    </div>
-
-    {% block content %}
-    <!-- This is where child template content will be injected -->
-    {% endblock content %}
-
-    <!-- Report Button -->
-    <div class="text-center mt-4 container-btn-report">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
-            Report an Issue
-        </button>
+{% block header %}
+{% endblock header %}
+{% block content %}
+<div class="container mt-2">
+    <div class="justify-content-between align-items-center">
+        <body class="text-center bg-light">
+            <div class="cover-container scroll-container d-flex h-50 p-3 mx-auto flex-column">
+                <header class="mb-5">
+                    <div class="container">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="masthead-brand mb-0">UVA Bullying Whistleblower App</h3>
+                            <nav class="nav nav-masthead justify-content-center">
+                                {% if user.is_authenticated %}
+                                <a class="nav-link" aria-current="page" href="{% url 'login' %}">View Profile</a>
+                                {% else %}
+                                <a class="nav-link" aria-current="page" href="{% url 'login_page' %}">Login</a>
+                                {% endif %}
+                                <a class="nav-link" href="about">About</a>
+                                <a class="nav-link" href="contact">Contact</a>
+                            </nav>
+                        </div>
+                    </div>
+                </header>
+                <div class = "section">
+                    <main class = "section" role="main" class="px-3">
+                        <h1 class="cover-heading mb-3">Report Instances of Bullying Across Grounds</h1>
+                        <div class="container mb-2">
+                            <div class="row justify-content-center">
+                                <div class="col-md-9">
+                                    <p class="lead">
+                                        This Bullying Whistleblower App provides a pivotal platform for reporting instances of bullying within UVA, 
+                                        offering a confidential and straightforward way for students, parents, and educators to report incidents. 
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% if user.is_authenticated %}
+                        {% else %}
+                        <div class="container mb-2">
+                            <div class="row justify-content-center">
+                                <div class="col-md-9">
+                                    <p class="lead text-danger font-weight-bold">
+                                        You are currently not logged in. Log in or create an account to view all of your previous submissions and see their status in real time.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endblock content %} 
+                        <div class="container mb-2">
+                            <div class="d-flex justify-content-center">
+                                <div class="">  
+                                    <p class="lead">
+                                        {% if submissions %}
+                                        <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                            Report Another Instance
+                                        </button>
+                                        {% else %}
+                                        <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                            Report an Instance
+                                        </button>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+        </body>
     </div>
 </div>
 
@@ -62,16 +91,16 @@
 
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content rounded-4">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
+        <div class="modal-content text-start rounded-4">
+            <div class="modal-header text-start">
+                <h5 class="modal-title" id="reportModalLabel">Report an Instance of Bullying</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" id = "reportForm" enctype="multipart/form-data" action="{% url 'upload' %}">
+                <form method="post" class="reportForm" id = "reportForm" enctype="multipart/form-data" action="{% url 'upload' %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="title" class="form-label">Title</label>
+                        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="title" name="title" required>
                     </div>
                     <div class="mb-3">
@@ -79,11 +108,11 @@
                         <input type="file" class="form-control" id="file" name="file[]" multiple accept=".txt, .pdf, .jpg">
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
+                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="tag" class="form-label">Tag</label>
+                        <label for="tag" class="form-label">Tag <span class="text-danger">*</span></label>
                         <select class="form-control" id="tag" name="tag" style="-webkit-appearance: listbox !important;" required>
                             <option value="" selected="true" disabled="disabled">----------</option>
                             <option value="Physical Bullying">Physical Bullying</option>
@@ -97,10 +126,37 @@
                         </select>
                     </div>
                     <div class="d-flex justify-content-beginning">
-                        <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+                        <button type="submit" id="submitButton" class="btn btn-primary" disabled>Submit</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const reportForm = document.getElementById('reportForm');
+        const submitButton = document.getElementById('submitButton');
+        const inputs = reportForm.querySelectorAll('input, textarea, select');
+
+        function updateButtonState() {
+            submitButton.disabled = !reportForm.checkValidity();
+        }
+    
+        inputs.forEach(input => {
+            input.addEventListener('change', updateButtonState);
+            input.addEventListener('keyup', updateButtonState);
+        });
+    
+        reportForm.addEventListener('submit', function () {
+            var modalElement = document.getElementById('reportModal');
+            var modalInstance = bootstrap.Modal.getInstance(modalElement);
+            modalInstance._config.backdrop = 'static';
+            modalInstance._config.keyboard = false;
+            const closeButton = modalElement.querySelector('.btn-close');
+            submitButton.textContent = "Processing..."
+            closeButton.disabled = true;
+            submitButton.disabled = true;
+        });
+    });    
+</script>

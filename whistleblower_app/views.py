@@ -17,8 +17,6 @@ import os
 
 
 def index(request):
-    if(request.user.is_authenticated):
-        return redirect("/profile/")
     return render(request, "whistleblower_app/index.html", {'form': UploadFileForm})
 
 def file_upload_view(request):

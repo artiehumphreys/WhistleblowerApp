@@ -4,11 +4,24 @@
 {% block title %}User Profile - {{ user.username }}{% endblock title %}
 
 {% block header %}
-<h1>Welcome, {{ user.username }}</h1>
+<header class="mb-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <h1>Welcome, {{ user.username }}</h1>
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link" aria-current="page" href="{% url 'logout' %}">Logout</a>
+                <a class="nav-link" aria-current="page" href="{% url 'index' %}">Home</a>
+                <a class="nav-link" href="about">About</a>
+                <a class="nav-link" href="contact">Contact</a>
+            </nav>
+        </div>
+    </div>
+</header>
 {% endblock header %}
 
 {% block content %}
 {% load static %}
+
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,174 +32,178 @@
 
 
 
-<body class="bg-light">
-    {% if submissions %}
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-        <h3 class="border-bottom border-gray pb-2 mb-0">Your Previous Reports</h3>
-        <div class="p-3 mb-3 rounded d-flex align-items-center justify-content-between">
-            <div>
-                <p class="text-muted mb-0">
-                    <i class="fas fa-info-circle mr-2 text-primary"></i>
-                    Hover over and click on a report to view its details. Click the report again to collapse it.
-                </p>
-            </div>
-        </div>
-        <div class="my-3 px-3 bg-white rounded box-shadow mb-0 mt-0">
-            <form id="sort-form" action="" method="GET" class="row g-3 align-items-center">
-                <div class="col-auto mb-0 mt-0">
-                    <label for="sort-by" class="col-form-label">Sort Reports By:</label>
-                </div>
-                <div class="col-auto mb-0 mt-0">
-                    <select class="form-select" id="sort-by" name="sort" onchange="this.form.submit();">
-                        <option value="default" {% if selected_sort == 'default' %}selected{% endif %}>Default</option>
-                        <option value="status" {% if selected_sort == 'status' %}selected{% endif %}>Status</option>
-                        <option value="date" {% if selected_sort == 'date' %}selected{% endif %}>Date</option>
-                    </select>
-                    
-                </div>
-            </form>
-        </div>        
-        <ul style="list-style-type:none;" class="my-3 px-3 bg-white rounded box-shadow">
-            {% for submission_data, files in submissions.items %}
-            <li class="dropdown-container media text-muted pt-3">
-                <div class="rounded box-shadow" onclick="toggleDropdown(this)">
-                    <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray h1">
-                        <strong class="d-block text-gray-dark h4">{{ submission_data.1 }}</strong>
-                        Reported By: {{ submission_data.2 }}
-                    </p>
-                </div>
-            <div class="dropdown-content">
-                {% for file in files %}
-                <div class="dropdown-content-inner">
-                    <div class="file-info flex">
-                        <div class="d-flex align-items-center mb-3">
-                            <h5 class="me-2 mb-0">Description:</h5>
-                            <p class="mb-0">{{ file.description }}</p>
-                        </div>
-                        <br>
-                        <div class="d-flex align-items-center mb-3">
-                            <h5 class="me-2 mb-0">Type of Bullying:</h5>
-                            <p class="mb-0">{{ file.tag }}</p>
-                        </div>
-                        <br>
-                        <div class="d-flex align-items-center mb-3">
-                            <h5 id="status-display" class="me-2 mb-0">Status:</h5>
-                            <p class="mb-0">{{ file.status }}</p>
-                        </div>
-                        <br>
-                        <div class="d-flex align-items-center mb-3">
-                            <h5 id="status-display" class="me-2 mb-0">Uploaded At:</h5>
-                            <p class="mb-0">{{ file.time }}</p>
-                        </div>
-                        <br>
-                        {% if file.note %}
-                        <div class="d-flex align-items-center mb-3">
-                            <h5 id="note-display" class="me-2 mb-0">Note:</h5>
-                            <p class="mb-0">{{ file.note }}</p>
-                        </div>
-                        {% endif %}
-                        <!-- Form for file deletion -->                           
-                    </div>
-                    <div class="file-display text-center mb-2 mt-2">
-                        {% if '.pdf' in file.url|lower %}
-                        <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                            type="application/pdf" style="width:80%; height:36vh;">
-                        </object>
-                        {% elif '.jpg' in file.url|lower %}
-                        <img src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                            style="width: 80%; height:36vh;">
-                        {% elif '.txt' in file.url|lower %}
-                        <embed src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                            style="width: 80%; height: 36vh;"></embed>
-                        {% else %}
-                        <h5>Unable to Display Content</h5>
-                        {% endif %}
-                        <br>
-                        <div class="mt-2">
-                            <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank" class="btn btn-link">View File in a New Window</a>
-                        </div>
+<div class="container mt-4">
+    <div class="justify-content-between align-items-center">
+        <body class="bg-light">
+            {% if submissions %}
+            <div class="my-3 p-3 bg-white rounded box-shadow">
+                <h3 class="border-bottom border-gray pb-2 mb-0">Your Previous Reports</h3>
+                <div class="p-3 mb-3 rounded d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-info-circle mr-2 text-primary"></i>
+                            Hover over and click on a report to view its details. Click the report again to collapse it.
+                        </p>
                     </div>
                 </div>
+                <div class="my-3 px-3 bg-white rounded box-shadow mb-0 mt-0">
+                    <form id="sort-form" action="" method="GET" class="row g-3 align-items-center">
+                        <div class="col-auto mb-0 mt-0">
+                            <label for="sort-by" class="col-form-label">Sort Reports By:</label>
+                        </div>
+                        <div class="col-auto mb-0 mt-0">
+                            <select class="form-select" id="sort-by" name="sort" onchange="this.form.submit();">
+                                <option value="default" {% if selected_sort == 'default' %}selected{% endif %}>Default</option>
+                                <option value="status" {% if selected_sort == 'status' %}selected{% endif %}>Status</option>
+                                <option value="date" {% if selected_sort == 'date' %}selected{% endif %}>Date</option>
+                            </select>
+                            
+                        </div>
+                    </form>
+                </div>        
+                <ul style="list-style-type:none;" class="my-3 px-3 bg-white rounded box-shadow">
+                    {% for submission_data, files in submissions.items %}
+                    <li class="dropdown-container media text-muted pt-3">
+                        <div class="rounded box-shadow" onclick="toggleDropdown(this)">
+                            <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray h1">
+                                <strong class="d-block text-gray-dark h4">{{ submission_data.1 }}</strong>
+                                Reported By: {{ submission_data.2 }}
+                            </p>
+                        </div>
+                    <div class="dropdown-content">
+                        {% for file in files %}
+                        <div class="dropdown-content-inner">
+                            <div class="file-info flex">
+                                <div class="d-flex align-items-center mb-3">
+                                    <h5 class="me-2 mb-0">Description:</h5>
+                                    <p class="mb-0">{{ file.description }}</p>
+                                </div>
+                                <br>
+                                <div class="d-flex align-items-center mb-3">
+                                    <h5 class="me-2 mb-0">Type of Bullying:</h5>
+                                    <p class="mb-0">{{ file.tag }}</p>
+                                </div>
+                                <br>
+                                <div class="d-flex align-items-center mb-3">
+                                    <h5 id="status-display" class="me-2 mb-0">Status:</h5>
+                                    <p class="mb-0">{{ file.status }}</p>
+                                </div>
+                                <br>
+                                <div class="d-flex align-items-center mb-3">
+                                    <h5 id="status-display" class="me-2 mb-0">Uploaded At:</h5>
+                                    <p class="mb-0">{{ file.time }}</p>
+                                </div>
+                                <br>
+                                {% if file.note %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <h5 id="note-display" class="me-2 mb-0">Note:</h5>
+                                    <p class="mb-0">{{ file.note }}</p>
+                                </div>
+                                {% endif %}
+                                <!-- Form for file deletion -->                           
+                            </div>
+                            <div class="file-display text-center mb-2 mt-2">
+                                {% if '.pdf' in file.url|lower %}
+                                <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
+                                    type="application/pdf" style="width:80%; height:36vh;">
+                                </object>
+                                {% elif '.jpg' in file.url|lower %}
+                                <img src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
+                                    style="width: 80%; height:36vh;">
+                                {% elif '.txt' in file.url|lower %}
+                                <embed src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
+                                    style="width: 80%; height: 36vh;"></embed>
+                                {% else %}
+                                <h5>Unable to Display Content</h5>
+                                {% endif %}
+                                <br>
+                                <div class="mt-2">
+                                    <a href="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}" target="_blank" class="btn btn-link">View File in a New Window</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <button type="button" class="btn btn-warning mx-2 my-2" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmEditModal-{{ submission_data.0 }}"
+                                    data-fileid="{{ submission_data.0 }}" 
+                                    data-title="{{ submission_data.1 }}">
+                                    <i class="bi bi-pen"></i> Edit Submission
+                                </button>
+                                <div class="modal fade confirm-edit-modal" id="confirmEditModal-{{ submission_data.0 }}" tabindex="-1" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmEditModalLabel">Edit Submission: {{ submission_data.1 }}</h5>
+                                                <button type="button" id="closeEditModalButton-{{ submission_data.0 }}" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="edit-form-{{ submission_data.0 }}" method="post" action="{% url 'edit_submission' submission_data.0 %}">
+                                                    {% csrf_token %}
+                                                    <div class="mb-3">
+                                                        <label for="edit-title-{{ submission_data.0 }}" class="form-label">Title:</label>
+                                                        <input type="text" class="form-control" id="edit-title-{{ submission_data.0 }}" name="edit-title" value="{{ submission_data.1 }}" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="edit-description-{{ submission_data.0 }}" class="form-label">Description:</label>
+                                                        <textarea class="form-control" id="edit-description-{{ submission_data.0 }}" name="edit-description" required>{{ submission_data.3 }}</textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="edit-tag-{{ submission_data.0 }}" class="form-label">Type of Bullying:</label>
+                                                        <select class="form-control" id="edit-tag-{{ submission_data.0 }}" name="edit-tag" style="-webkit-appearance: listbox !important;" required>
+                                                            <option value="Physical Bullying" {% if 'tag' == 'Physical Bullying' %}selected{% endif %}>Physical Bullying</option>
+                                                            <option value="Verbal Abuse" {% if 'tag' == 'Verbal Abuse' %}selected{% endif %}>Verbal Abuse</option>
+                                                            <option value="Cyberbullying" {% if 'tag' == 'Cyberbullying' %}selected{% endif %}>Cyberbullying</option>
+                                                            <option value="Racist Bullying" {% if 'tag' == 'Racist Bullying' %}selected{% endif %}>Racist Bullying</option>
+                                                            <option value="Inappropriate Sexual Comments" {% if 'tag' == 'Inappropriate Sexual Comments' %}selected{% endif %}>Inappropriate Sexual Comments</option>
+                                                            <option value="Social Bullying" {% if 'tag' == 'Social Bullying' %}selected{% endif %}>Social Bullying</option>
+                                                            <option value="Emotional Intimidation" {% if 'tag' == 'Emotional Intimidation' %}selected{% endif %}>Emotional Intimidation</option>
+                                                            <option value="Other" {% if 'tag' == 'Other' %}selected{% endif %}>Other</option>
+                                                        </select>
+                                                    </div>
+                                    
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" id="editButton-{{ submission_data.0 }}" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        <button type="button" class="btn btn-danger mx-2 my-2" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmDeleteModal-{{ submission_data.0 }}"
+                                    data-fileid="{{ submission_data.0 }}" 
+                                    data-title="{{ submission_data.1 }}">
+                                    <i class="fas fa-trash-alt"></i> Delete Submission
+                                </button>                     
+                                <div class="modal fade confirm-delete-modal" id="confirmDeleteModal-{{ submission_data.0 }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmDeleteModalLabel"></h5>
+                                                <button type="button" id = "closeButton-{{ submission_data.0 }}" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this file?
+                                                <form id="delete-form-{{ submission_data.0 }}" method="post" action="{% url 'delete_submission' submission_data.0 %}">
+                                                    {% csrf_token %}
+                                                </form>     
+                                            </div>
+                                            <div class="modal-footer" style="justify-content: flex-start;">
+                                                <button type="button" id = "deleteButton-{{ submission_data.0 }}" class="btn btn-danger confirmDeleteButton">Delete Submission</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+                </li>
                 {% endfor %}
-                <button type="button" class="btn btn-warning mx-2 my-2" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#confirmEditModal-{{ submission_data.0 }}"
-                    data-fileid="{{ submission_data.0 }}" 
-                    data-title="{{ submission_data.1 }}">
-                    <i class="bi bi-pen"></i> Edit Submission
-                </button>
-                <div class="modal fade confirm-edit-modal" id="confirmEditModal-{{ submission_data.0 }}" tabindex="-1" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmEditModalLabel">Edit Submission: {{ submission_data.1 }}</h5>
-                                <button type="button" id="closeEditModalButton-{{ submission_data.0 }}" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="edit-form-{{ submission_data.0 }}" method="post" action="{% url 'edit_submission' submission_data.0 %}">
-                                    {% csrf_token %}
-                                    <div class="mb-3">
-                                        <label for="edit-title-{{ submission_data.0 }}" class="form-label">Title:</label>
-                                        <input type="text" class="form-control" id="edit-title-{{ submission_data.0 }}" name="edit-title" value="{{ submission_data.1 }}" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="edit-description-{{ submission_data.0 }}" class="form-label">Description:</label>
-                                        <textarea class="form-control" id="edit-description-{{ submission_data.0 }}" name="edit-description" required>{{ submission_data.3 }}</textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="edit-tag-{{ submission_data.0 }}" class="form-label">Type of Bullying:</label>
-                                        <select class="form-control" id="edit-tag-{{ submission_data.0 }}" name="edit-tag" style="-webkit-appearance: listbox !important;" required>
-                                            <option value="Physical Bullying" {% if 'tag' == 'Physical Bullying' %}selected{% endif %}>Physical Bullying</option>
-                                            <option value="Verbal Abuse" {% if 'tag' == 'Verbal Abuse' %}selected{% endif %}>Verbal Abuse</option>
-                                            <option value="Cyberbullying" {% if 'tag' == 'Cyberbullying' %}selected{% endif %}>Cyberbullying</option>
-                                            <option value="Racist Bullying" {% if 'tag' == 'Racist Bullying' %}selected{% endif %}>Racist Bullying</option>
-                                            <option value="Inappropriate Sexual Comments" {% if 'tag' == 'Inappropriate Sexual Comments' %}selected{% endif %}>Inappropriate Sexual Comments</option>
-                                            <option value="Social Bullying" {% if 'tag' == 'Social Bullying' %}selected{% endif %}>Social Bullying</option>
-                                            <option value="Emotional Intimidation" {% if 'tag' == 'Emotional Intimidation' %}selected{% endif %}>Emotional Intimidation</option>
-                                            <option value="Other" {% if 'tag' == 'Other' %}selected{% endif %}>Other</option>
-                                        </select>
-                                    </div>
-                    
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" id="editButton-{{ submission_data.0 }}" class="btn btn-primary">Save Changes</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-danger mx-2 my-2" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#confirmDeleteModal-{{ submission_data.0 }}"
-                    data-fileid="{{ submission_data.0 }}" 
-                    data-title="{{ submission_data.1 }}">
-                    <i class="fas fa-trash-alt"></i> Delete Submission
-                </button>                     
-                <div class="modal fade confirm-delete-modal" id="confirmDeleteModal-{{ submission_data.0 }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmDeleteModalLabel"></h5>
-                                <button type="button" id = "closeButton-{{ submission_data.0 }}" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to delete this file?
-                                <form id="delete-form-{{ submission_data.0 }}" method="post" action="{% url 'delete_submission' submission_data.0 %}">
-                                    {% csrf_token %}
-                                </form>     
-                            </div>
-                            <div class="modal-footer" style="justify-content: flex-start;">
-                                <button type="button" id = "deleteButton-{{ submission_data.0 }}" class="btn btn-danger confirmDeleteButton">Delete Submission</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </li>
-        {% endfor %}
-    </ul> 
+            </ul> 
+        </div>
+        </body>
+    </div>
 </div>
-</body>
 
 
 <script>
@@ -213,6 +230,7 @@
             let confirmDeleteButton = modal.querySelector('.confirmDeleteButton');
             confirmDeleteButton.onclick = function() {
                 var button = document.getElementById(`deleteButton-${fileId}`);
+                button.textContent = "Processing..."
                 var close = document.getElementById(`closeButton-${fileId}`);
                 button.disabled = true;
                 close.disabled = true;
@@ -232,8 +250,10 @@
         } else {
             console.error('Delete form not found for ID:', fileId);
         }
+    }    
+
     }
-    
+
     document.querySelectorAll('.confirm-edit-modal').forEach(modal => {
         modal.addEventListener('show.bs.modal', function (event) {
             let button = event.relatedTarget;
@@ -261,7 +281,34 @@
             console.error('Edit form not found for ID:', fileId);
         }
     }
-    
+
+    document.querySelectorAll('.confirm-edit-modal').forEach(modal => {
+        modal.addEventListener('show.bs.modal', function (event) {
+            let button = event.relatedTarget;
+            let fileId = button.getAttribute('data-fileid');
+            let title = button.getAttribute('data-title');
+
+            let modalTitle = modal.querySelector('.modal-title');
+            modalTitle.textContent = 'Edit Submission: ' + title;
+
+            let editButton = modal.querySelector('#editButton-' + fileId);
+            editButton.addEventListener('click', function() {
+                var button = document.getElementById(`editButton-${fileId}`);
+                button.textContent = "Saving..."
+                button.disabled = true;
+                saveChanges(fileId);
+            });
+        });
+    });
+
+    function saveChanges(fileId) {
+        var editForm = document.getElementById(`edit-form-${fileId}`);
+        if (editForm) {
+            editForm.submit();
+        } else {
+            console.error('Edit form not found for ID:', fileId);
+        }
+    }
 </script>
 {% endif %}
 

@@ -15,6 +15,8 @@ from django.http import HttpResponse
 
 
 def profile(request):
+    if(not request.user.is_authenticated):
+        return redirect("index")
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     response = s3.list_objects_v2(Bucket='b29-whistleblower')
     submissions = defaultdict(list)
@@ -34,7 +36,7 @@ def profile(request):
             submission_id = metadata.get('submission_id', "Old Files")
             url = str(file_key).replace(' ', '_').replace('(', '').replace(')', '')
             if submission_id != None and request.user.username == metadata.get('username'):
-                submissions[(submission_id, metadata.get('title'), metadata.get('username', 'No User Data Available'))].append({
+                submissions[(submission_id, metadata.get('title'), metadata.get('username', 'No User Data Available'), metadata.get('description', 'No Description Available.'), metadata.get('tag', 'Other'))].append({
                     'url': url,
                     'username': metadata.get('username', 'No User Data Available'),
                     'description': metadata.get('description', 'No Description Available.'),
@@ -44,7 +46,7 @@ def profile(request):
                     'time': metadata.get('time', 'No Time Data Available.')
                 })
             elif (is_site_admin and submission_id != None):
-                submissions[(submission_id, metadata.get('title'), metadata.get('username', 'No User Data Available'))].append({
+                submissions[(submission_id, metadata.get('title'), metadata.get('username', 'No User Data Available'), metadata.get('description', 'No Description Available.'), metadata.get('tag', 'Other'))].append({
                     'url': url,
                     'username': metadata.get('username', 'No User Data Available'),
                     'description': metadata.get('description', 'No Description Available.'),
@@ -106,6 +108,45 @@ def change_file_status(request):
         print(f"Error code: {error_code}, Message: {error_message}")
         return JsonResponse({'message': 'Error updating status'}, status=500)
     return JsonResponse({'message': 'Status updated successfully'})
+
+def edit_submission(request, submission_id):
+    if request.method == 'POST':
+        title = request.POST.get('edit-title')
+        description = request.POST.get('edit-description')
+        tag = request.POST.get('edit-tag')
+        
+        s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        try:
+            response = s3.list_objects_v2(Bucket='b29-whistleblower')
+            if 'Contents' in response:
+                for item in response['Contents']: 
+                    file_key = item['Key']
+                    if "uploads/" in file_key:
+                        continue
+                    metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
+                    metadata = metadata_response.get('Metadata', {})
+                    if submission_id == metadata.get('submission_id', "Old Files"):
+                        # print(note)
+                        metadata['title'] = title
+                        metadata['description'] = description
+                        metadata['tag'] = tag
+                        
+                        s3.copy_object(
+                            Bucket='b29-whistleblower', 
+                            CopySource={'Bucket': 'b29-whistleblower', 'Key': file_key},
+                            Key=file_key, 
+                            Metadata=metadata, 
+                            MetadataDirective='REPLACE'
+                        )
+
+            return redirect('login')
+        
+        except Submission.DoesNotExist:
+            return JsonResponse({'message': 'Submission does not exist'}, status=404)
+    
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=400)
+
 
 def delete_submission(request, submission_id):
     is_site_admin = request.user.groups.filter(name="Site Admin").exists()  # Check once before the loop
