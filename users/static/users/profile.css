@@ -18,7 +18,7 @@
     background-color: rgba(255, 255, 255, 0.3);;
     backdrop-filter: blur(16px);
     max-height: 0;
-    transition: max-height 0.3s ease-in-out;
+    transition: max-height 0.2s ease-in-out;
 }
 
 .dropdown-content.show {
@@ -47,4 +47,9 @@
 .dropdown-content-inner .file-display object {
     width: auto;
     height: auto;
+}
+
+body{
+    padding-bottom: 10vh;
+    overflow: hidden;
 }
