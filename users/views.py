@@ -15,6 +15,8 @@ from django.http import HttpResponse
 
 
 def profile(request):
+    if(not request.user.is_authenticated):
+        return redirect("index")
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     response = s3.list_objects_v2(Bucket='b29-whistleblower')
     submissions = defaultdict(list)
