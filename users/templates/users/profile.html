@@ -171,17 +171,27 @@
                                                 <form id="edit-form-{{ submission_data.0 }}" method="post" action="{% url 'edit_submission' submission_data.0 %}">
                                                     {% csrf_token %}
                                                     <div class="mb-3">
-                                                        <label for="edit-title-{{ submission_data.0 }}" class="form-label">title:</label>
-                                                        <textarea class="form-control" id="edit-title-{{ submission_data.0 }}" name="edit_title">{{ file.title }}</textarea>
+                                                        <label for="edit-title-{{ submission_data.0 }}" class="form-label">Title:</label>
+                                                        <input type="text" class="form-control" id="edit-title-{{ submission_data.0 }}" name="edit-title" value="{{ submission_data.1 }}" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="edit-description-{{ submission_data.0 }}" class="form-label">Description:</label>
-                                                        <textarea class="form-control" id="edit-description-{{ submission_data.0 }}" name="edit_description">{{ file.description }}</textarea>
+                                                        <textarea class="form-control" id="edit-description-{{ submission_data.0 }}" name="edit_description" required>{{ submission_data.3 }}</textarea>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="edit-tag-{{ submission_data.0 }}" class="form-label">Type of Bullying:</label>
-                                                        <input type="text" class="form-control" id="edit-tag-{{ submission_data.0 }}" name="edit_tag" value="{{ file.tag }}">
+                                                        <select class="form-control" id="edit-tag-{{ submission_data.0 }}" name="edit_tag" style="-webkit-appearance: listbox !important;" required>
+                                                            <option value="Physical Bullying" {% if 'tag' == 'Physical Bullying' %}selected{% endif %}>Physical Bullying</option>
+                                                            <option value="Verbal Abuse" {% if 'tag' == 'Verbal Abuse' %}selected{% endif %}>Verbal Abuse</option>
+                                                            <option value="Cyberbullying" {% if 'tag' == 'Cyberbullying' %}selected{% endif %}>Cyberbullying</option>
+                                                            <option value="Racist Bullying" {% if 'tag' == 'Racist Bullying' %}selected{% endif %}>Racist Bullying</option>
+                                                            <option value="Inappropriate Sexual Comments" {% if 'tag' == 'Inappropriate Sexual Comments' %}selected{% endif %}>Inappropriate Sexual Comments</option>
+                                                            <option value="Social Bullying" {% if 'tag' == 'Social Bullying' %}selected{% endif %}>Social Bullying</option>
+                                                            <option value="Emotional Intimidation" {% if 'tag' == 'Emotional Intimidation' %}selected{% endif %}>Emotional Intimidation</option>
+                                                            <option value="Other" {% if 'tag' == 'Other' %}selected{% endif %}>Other</option>
+                                                        </select>
                                                     </div>
+                                    
                                                 </form>
                                             </div>
                                             <div class="modal-footer">
