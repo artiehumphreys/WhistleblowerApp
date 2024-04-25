@@ -211,6 +211,7 @@
             let confirmDeleteButton = modal.querySelector('.confirmDeleteButton');
             confirmDeleteButton.onclick = function() {
                 var button = document.getElementById(`deleteButton-${fileId}`);
+                button.textContent = "Processing..."
                 var close = document.getElementById(`closeButton-${fileId}`);
                 button.disabled = true;
                 close.disabled = true;
@@ -230,7 +231,7 @@
         } else {
             console.error('Delete form not found for ID:', fileId);
         }
-    }    
+    }
 </script>
 {% endif %}
 

@@ -72,23 +72,30 @@
                         <div class="row justify-content-center">
                             <div class="col-md-9">
                                 <p class="lead text-danger font-weight-bold">
-                                    You are currently not logged in. Log in or create an account to view previous submissions and view their status in real time.
+                                    You are currently not logged in. Log in or create an account to view all of your previous submissions and see their status in real time.
                                 </p>
                             </div>
                         </div>
                     </div>
                     {% endif %}
-                    <p class="lead">
-                        <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
-                            Report an Issue
-                        </button>
-                    </p>
+                    {% endblock content %} 
+                    <div class="container mb-2">
+                        <div class="d-flex justify-content-center">
+                            <div class="">  
+                                <p class="lead">
+                                    <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                        Report an Issue
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </main>
             </div>
         </body>
     </div>
 </div>
-{% endblock content %}   
+
 {% comment %} 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center">
@@ -185,6 +192,7 @@
             modalInstance._config.backdrop = 'static';
             modalInstance._config.keyboard = false;
             const closeButton = modalElement.querySelector('.btn-close');
+            submitButton.textContent = "Processing..."
             closeButton.disabled = true;
             submitButton.disabled = true;
         });
