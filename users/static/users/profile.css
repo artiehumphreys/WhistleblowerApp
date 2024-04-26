@@ -1,21 +1,15 @@
-.dropdown-container {
-    margin-bottom: 15px;
-    
+.media-body p {
+    margin-bottom: 0;
 }
 
-.dropdown-title {
+.dropdown-container:hover {
     cursor: pointer;
-    padding: 5px;
-    background-color: rgba(255, 255, 255, 0.5);;
-    backdrop-filter: blur(16px);
-    transition: background-color 0.3s ease-in-out;
+    background-color: #f8f9fa;
 }
 
 .dropdown-content {
     border-top: none;
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.3);;
-    backdrop-filter: blur(16px);
+    overflow: hidden;
     max-height: 0;
     transition: max-height 0.2s ease-in-out;
 }
