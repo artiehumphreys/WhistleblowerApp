@@ -1,62 +1,34 @@
+{% extends 'base.html' %}
 {% load socialaccount %}
-{% load bootstrap5 %}
-<h2>Welcome to the site admin page.</h2>
-<h2>Here's a list of all of the submitted files by users:</h2>
-{% if user.is_authenticated %}
-        <a href="logout" class = "position-absolute top-0 end-0 me-5 mt-5">
-            <button>Logout</button>
-        </a>
-    {% endif %}
+{% load static %}
+
+{% block title %}Admin Profile - {{ user.username }}{% endblock title %}
+
+{% block header %}
+<header class="mb-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <h1>Welcome, Admin {{ user.username }}</h1>
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link" aria-current="page" href="{% url 'logout' %}">Logout</a>
+                <a class="nav-link" aria-current="page" href="{% url 'index' %}">Home</a>
+                <a class="nav-link" href="about">About</a>
+                <a class="nav-link" href="contact">Contact</a>
+            </nav>
+        </div>
+    </div>
+</header>
+{% endblock header %}
+
+{% block content %}
 
 <head>
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Include jQuery and Bootstrap Bundle JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="{% static 'users/siteadmin.css' %}">
 </head>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<!-- Include jQuery and Bootstrap Bundle JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-<style>
-    .dropdown-container {
-        margin-bottom: 10px;
-    }
-
-    .dropdown-title {
-        cursor: pointer;
-        padding: 5px;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-    }
-
-    .dropdown-content {
-        display: none;
-        border: 1px solid #ddd;
-        border-top: none;
-    }
-
-    .dropdown-content-inner {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-    }
-
-    .dropdown-content-inner .file-info {
-        flex-grow: 1;
-    }
-
-    .dropdown-content-inner .file-info h4 {
-        margin: 0 0 5px 0;
-    }
-
-    .dropdown-content-inner .file-display {
-        flex-shrink: 0;
-        margin-left: 10px;
-    }
-
-</style>
-
-
 
 <ul style="list-style-type:none;">
     {% for submission_data, files in submissions.items %}
@@ -98,7 +70,7 @@
                 <div class="file-display text-center mb-4">
                     {% if '.pdf' in file.url|lower %}
                     <object data="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
-                        type="application/pdf" style="width=300%; height=500%;">
+                        type="application/pdf" style="width:300%; height:500%;">
                     </object>
                     {% elif '.jpg' in file.url|lower %}
                     <img src="https://s3.amazonaws.com/b29-whistleblower/uploads/{{ file.url }}"
@@ -206,3 +178,6 @@
     };
 
 </script>
+
+
+{% endblock content %}
