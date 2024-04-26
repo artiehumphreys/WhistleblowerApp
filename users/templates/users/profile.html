@@ -65,7 +65,7 @@
 <div class="container mt-4">
     <div class="justify-content-between align-items-center">
         <body class="bg-light">
-            {% if submissions %}
+            {% if page_obj %}
             <div class="my-3 p-3 bg-white rounded box-shadow">
                 <h3 class="border-bottom border-gray pb-2 mb-0">Your Previous Reports</h3>
                 <div class="p-3 mb-3 rounded d-flex align-items-center justify-content-between">
@@ -76,23 +76,22 @@
                         </p>
                     </div>
                 </div>
-                <div class="my-3 px-3 bg-white rounded box-shadow mb-0 mt-0">
+                <div class="my-3 px-3 bg-white rounded box-shadow mb-0">
                     <form id="sort-form" action="" method="GET" class="row g-3 align-items-center">
-                        <div class="col-auto mb-0 mt-0">
+                        <div class="col-auto mb-0">
                             <label for="sort-by" class="col-form-label">Sort Reports By:</label>
                         </div>
-                        <div class="col-auto mb-0 mt-0">
+                        <div class="col-auto mb-0">
                             <select class="form-select" id="sort-by" name="sort" onchange="this.form.submit();">
                                 <option value="default" {% if selected_sort == 'default' %}selected{% endif %}>Default</option>
                                 <option value="status" {% if selected_sort == 'status' %}selected{% endif %}>Status</option>
                                 <option value="date" {% if selected_sort == 'date' %}selected{% endif %}>Date</option>
                             </select>
-                            
                         </div>
                     </form>
-                </div>        
+                </div>
                 <ul style="list-style-type:none;" class="my-3 px-3 bg-white rounded box-shadow">
-                    {% for submission_data, files in submissions.items %}
+                    {% for submission_data, files in page_obj %}
                     <li class="dropdown-container media text-muted pt-3">
                         <div class="rounded box-shadow" onclick="toggleDropdown(this)">
                             <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray h1">
@@ -230,11 +229,37 @@
                                         </div>
                                     </div>
                                 </div>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul> 
-        </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <div class="container mt-4">
+                        <div class="text-center mb-2">
+                            <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                        </div>
+                        <div class="row justify-content-center">
+                            {% if page_obj.has_previous %}
+                            <div class="col-auto">
+                                <a href="?page=1{% if selected_sort != 'default' %}&sort={{ selected_sort }}{% endif %}" class="btn btn-primary">&laquo; First</a>
+                            </div>
+                            <div class="col-auto">
+                                <a href="?page={{ page_obj.previous_page_number }}{% if selected_sort != 'default' %}&sort={{ selected_sort }}{% endif %}" class="btn btn-primary">Previous</a>
+                            </div>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                            <div class="col-auto">
+                                <a href="?page={{ page_obj.next_page_number }}{% if selected_sort != 'default' %}&sort={{ selected_sort }}{% endif %}" class="btn btn-primary">Next</a>
+                            </div>
+                            <div class="col-auto">
+                                <a href="?page={{ page_obj.paginator.num_pages }}{% if selected_sort != 'default' %}&sort={{ selected_sort }}{% endif %}" class="btn btn-primary">Last &raquo;</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>                                      
+                </ul>
+            </div>
+            {% else %}
+            <p>No submissions found.</p>
+            {% endif %}
         </body>
     </div>
 </div>
@@ -313,6 +338,5 @@
     }
     
 </script>
-{% endif %}
 
 {% endblock content %}
