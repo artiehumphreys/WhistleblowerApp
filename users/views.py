@@ -65,8 +65,6 @@ def profile(request):
         submissions = OrderedDict(sorted(submissions.items(), key=sort_time)[::-1])
     else:
         submissions = OrderedDict(submissions)
-
-    print(submissions.items())
     if not is_site_admin:
         paginator = Paginator(list(submissions.items()), 5)  # 5 submissions per page
         page_number = request.GET.get('page')
