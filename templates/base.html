@@ -62,15 +62,9 @@
                             <div class="d-flex justify-content-center">
                                 <div class="">  
                                     <p class="lead">
-                                        {% if submissions %}
                                         <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
-                                            Report Another Instance
+                                            Report Bullying
                                         </button>
-                                        {% else %}
-                                        <button type="button" class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
-                                            Report an Instance
-                                        </button>
-                                        {% endif %}
                                     </p>
                                 </div>
                             </div>
@@ -100,19 +94,19 @@
                 <form method="post" class="reportForm" id = "reportForm" enctype="multipart/form-data" action="{% url 'upload' %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                        <label for="title" class="form-label">Title: <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="title" name="title" required>
                     </div>
                     <div class="mb-3">
-                        <label for="file" class="form-label">Upload File</label>
+                        <label for="file" class="form-label">Upload File:</label>
                         <input type="file" class="form-control" id="file" name="file[]" multiple accept=".txt, .pdf, .jpg">
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                        <label for="description" class="form-label">Description: <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="tag" class="form-label">Tag <span class="text-danger">*</span></label>
+                        <label for="tag" class="form-label">Tag: <span class="text-danger">*</span></label>
                         <select class="form-control" id="tag" name="tag" style="-webkit-appearance: listbox !important;" required>
                             <option value="" selected="true" disabled="disabled">----------</option>
                             <option value="Physical Bullying">Physical Bullying</option>
@@ -126,7 +120,7 @@
                         </select>
                     </div>
                     <div class="d-flex justify-content-beginning">
-                        <button type="submit" id="submitButton" class="btn btn-primary" disabled>Submit</button>
+                        <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
@@ -138,15 +132,6 @@
         const reportForm = document.getElementById('reportForm');
         const submitButton = document.getElementById('submitButton');
         const inputs = reportForm.querySelectorAll('input, textarea, select');
-
-        function updateButtonState() {
-            submitButton.disabled = !reportForm.checkValidity();
-        }
-    
-        inputs.forEach(input => {
-            input.addEventListener('change', updateButtonState);
-            input.addEventListener('keyup', updateButtonState);
-        });
     
         reportForm.addEventListener('submit', function () {
             var modalElement = document.getElementById('reportModal');

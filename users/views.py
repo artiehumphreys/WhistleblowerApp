@@ -9,8 +9,7 @@ from botocore.exceptions import ClientError
 from collections import defaultdict, OrderedDict
 from whistleblower_app.forms import UploadFileForm
 from whistleblower_app.models import UploadedFile, Submission
-from django.contrib.auth import login, authenticate
-from django.http import HttpResponse
+from django.core.paginator import Paginator, Page
 
 
 
@@ -66,10 +65,15 @@ def profile(request):
         submissions = OrderedDict(sorted(submissions.items(), key=lambda x: x[1][0]['time'])[::-1])
     else:
         submissions = OrderedDict(submissions)
+
+    paginator = Paginator(list(submissions.items()), 5)  # 5 submissions per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     if is_site_admin:
-        return render(request, "users/siteadmin.html",{'submissions': submissions, 'selected_sort': sort_key})
+        return render(request, "users/siteadmin.html", {'page_obj': page_obj, 'selected_sort': sort_key})
     else:
-        return render(request, "users/profile.html", {'submissions': submissions, 'selected_sort': sort_key, 'form': UploadFileForm})
+        return render(request, "users/profile.html", {'page_obj': page_obj, 'selected_sort': sort_key, 'form': UploadFileForm})
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -194,7 +198,8 @@ def delete_submission(request, submission_id):
             error_message = e.response['Error']['Message']
             print(f"Error deleting submission: {error_message}")
             return JsonResponse({'message': f'Error deleting submission: {error_message}'}, status=500)
-    
+
+
 
 def logout_view(request):
     logout(request)
