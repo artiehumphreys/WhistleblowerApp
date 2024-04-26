@@ -6,6 +6,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from botocore.exceptions import ClientError
+from datetime import datetime
 from collections import defaultdict, OrderedDict
 from whistleblower_app.forms import UploadFileForm
 from whistleblower_app.models import UploadedFile, Submission
@@ -61,10 +62,11 @@ def profile(request):
     if sort_key == 'status':
         submissions = OrderedDict(sorted(submissions.items(), key=lambda x: status_order.get(x[1][0]['status'], 999)))
     elif sort_key == 'date':
-        submissions = OrderedDict(sorted(submissions.items(), key=lambda x: x[1][0]['time'])[::-1])
+        submissions = OrderedDict(sorted(submissions.items(), key=sort_time)[::-1])
     else:
         submissions = OrderedDict(submissions)
 
+    print(submissions.items())
     if not is_site_admin:
         paginator = Paginator(list(submissions.items()), 5)  # 5 submissions per page
         page_number = request.GET.get('page')
@@ -73,6 +75,13 @@ def profile(request):
 
     
     return render(request, "users/siteadmin.html", {'submissions': submissions, 'selected_sort': sort_key})
+
+def sort_time(item):
+    time_str = item[1][0]['time']
+    time_obj = datetime.strptime(time_str, "%Y-%m-%d %I:%M %p")
+    hours = time_obj.hour + (12 if time_obj.strftime('%p') == 'AM' else 0)
+    new_time = time_obj.replace(hour=hours % 24)
+    return new_time
 
 @csrf_exempt
 @require_http_methods(["POST"])
