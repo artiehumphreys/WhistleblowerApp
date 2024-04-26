@@ -64,14 +64,14 @@ def profile(request):
     else:
         submissions = OrderedDict(submissions)
 
-    paginator = Paginator(list(submissions.items()), 5)  # 5 submissions per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    if is_site_admin:
-        return render(request, "users/siteadmin.html", {'page_obj': page_obj, 'selected_sort': sort_key})
-    else:
+    if not is_site_admin:
+        paginator = Paginator(list(submissions.items()), 5)  # 5 submissions per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
         return render(request, "users/profile.html", {'page_obj': page_obj, 'selected_sort': sort_key, 'form': UploadFileForm})
+
+    
+    return render(request, "users/siteadmin.html", {'submissions': submissions, 'selected_sort': sort_key})
 
 @csrf_exempt
 @require_http_methods(["POST"])
