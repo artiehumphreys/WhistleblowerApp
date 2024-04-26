@@ -56,6 +56,8 @@ def file_upload_view(request):
                 }
                 file_name = f"{submission.id}_{file.name}"
                 s3.upload_fileobj(file.file, 'b29-whistleblower', file_name, ExtraArgs=extra_args)
+        else:
+            return render(request, 'index', {'upload_error', 'There Was an Error Uploading Your Report. Please Refresh and Try Again.'})
 
         if username == 'Anonymous':
             return redirect('index')

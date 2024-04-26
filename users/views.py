@@ -52,6 +52,7 @@ def profile(request):
                     'tag': metadata.get('tag', 'Other'),
                     'time': metadata.get('time', 'No Time Data Available.')
                 })
+
     status_order = {
         'New': 1,
         'In Progress': 2,

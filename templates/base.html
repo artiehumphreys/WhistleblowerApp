@@ -57,6 +57,11 @@
                         </div>
                     </div>
                 </header>
+                {% if upload_error %}
+                <div class = "text-center bg-light">
+                    <span = "text-danger">{{ upload_error }}</span>
+                <div class = "text-center bg-light">  
+                {% endif %} 
                 <div class = "section">
                     <main class = "section" role="main" class="px-3">
                         <h1 class="cover-heading mb-3">Report Instances of Bullying Across Grounds</h1>
@@ -122,7 +127,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="file" class="form-label">Upload File:</label>
-                        <input type="file" class="form-control" id="file" name="file[]" multiple accept=".txt, .pdf, .jpg">
+                        <input type="file" class="form-control" id="file" name="file[]" onchange="onSelect(event)" multiple accept=".txt, .pdf, .jpg">
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description: <span class="text-danger">*</span></label>
@@ -151,11 +156,18 @@
     </div>
 </div>
 <script>
+    function onSelect(e) {
+        const input = document.getElementById('file');
+        console.log('hi');
+        if (input.files.length > 5) {
+            alert("You can only submit 5 files at a time.");
+            e.preventDefault();
+            input.value = "";
+        }
+    }
     document.addEventListener('DOMContentLoaded', function () {
         const reportForm = document.getElementById('reportForm');
         const submitButton = document.getElementById('submitButton');
-        const inputs = reportForm.querySelectorAll('input, textarea, select');
-    
         reportForm.addEventListener('submit', function () {
             var modalElement = document.getElementById('reportModal');
             var modalInstance = bootstrap.Modal.getInstance(modalElement);
