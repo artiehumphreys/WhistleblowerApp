@@ -9,8 +9,6 @@ from botocore.exceptions import ClientError
 from collections import defaultdict, OrderedDict
 from whistleblower_app.forms import UploadFileForm
 from whistleblower_app.models import UploadedFile, Submission
-from django.contrib.auth import login, authenticate
-from django.http import HttpResponse
 
 
 

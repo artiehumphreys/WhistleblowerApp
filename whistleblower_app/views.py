@@ -1,18 +1,10 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
 from django.core.files.base import ContentFile
-from django.template import loader
 from .forms import UploadFileForm
 from .models import UploadedFile, Submission
 import boto3
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
 from django.contrib.auth import logout
-from users import templates
-import datetime
-import tempfile
-import os
 
 
 
