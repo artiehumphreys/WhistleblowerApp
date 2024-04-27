@@ -82,6 +82,7 @@ def sort_time(item):
 @csrf_exempt
 @require_http_methods(["POST"])
 def change_file_status(request, submission_id):
+    print("Received submission_id:", submission_id)
     new_status = request.POST.get('newStatus')
     note = request.POST.get('userNote')
 
@@ -90,9 +91,6 @@ def change_file_status(request, submission_id):
     
     if not new_status:
         return JsonResponse({'message': 'status is missing'}, status=400)
-    
-    if not note:
-        return JsonResponse({'message': 'note is missing'}, status=400)
 
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
