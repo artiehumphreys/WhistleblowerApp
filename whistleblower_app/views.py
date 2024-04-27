@@ -72,3 +72,9 @@ def list_files(request):
 def logout_view(request):
     logout(request)
     return redirect("/whistleblower/")
+
+def about(request):
+    return render(request, 'whistleblower_app/about.html')
+
+def contact(request):
+    return render(request, 'whistleblower_app/contact.html')

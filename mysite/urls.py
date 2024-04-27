@@ -23,5 +23,9 @@ urlpatterns = [
     path('login/', include('auth_app.urls'), name = "auth"),
     path("admin/", admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path("", include("whistleblower_app.urls"))
+    path("", include("whistleblower_app.urls")),
+    path('', include('whistleblower_app.urls'), name='about'),
+    path('', include('whistleblower_app.urls'), name='contact')
+
+
 ]
