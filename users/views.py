@@ -66,15 +66,12 @@ def profile(request):
         submissions = OrderedDict(sorted(submissions.items(), key=sort_time)[::-1])
     else:
         submissions = OrderedDict(submissions)
-    if not is_site_admin:
-        paginator = Paginator(list(submissions.items()), 5)  # 5 submissions per page
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        return render(request, "users/profile.html", {'page_obj': page_obj, 'selected_sort': sort_key, 'form': UploadFileForm})
-
-    
-    return render(request, "users/siteadmin.html", {'submissions': submissions, 'selected_sort': sort_key})
-
+    paginator = Paginator(list(submissions.items()), 5)  # 5 submissions per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    if is_site_admin:
+        return render(request, "users/siteadmin.html", {'page_obj': page_obj, 'selected_sort': sort_key})
+    return render(request, "users/profile.html", {'page_obj': page_obj, 'selected_sort': sort_key, 'form': UploadFileForm})
 def sort_time(item):
     time_str = item[1][0]['time']
     time_obj = datetime.strptime(time_str, "%Y-%m-%d %I:%M %p")

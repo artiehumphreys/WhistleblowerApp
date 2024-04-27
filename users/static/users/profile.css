@@ -57,3 +57,6 @@ body::-webkit-scrollbar {
 .modal-backdrop {
     z-index: 9998;
 }
+.nav-masthead .nav-link {
+    color: #000000; /* Explicitly setting the color to black */
+}
