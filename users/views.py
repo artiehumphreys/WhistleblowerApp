@@ -74,9 +74,13 @@ def profile(request):
     return render(request, "users/profile.html", {'page_obj': page_obj, 'selected_sort': sort_key, 'form': UploadFileForm})
 def sort_time(item):
     time_str = item[1][0]['time']
-    time_obj = datetime.strptime(time_str, "%Y-%m-%d %I:%M %p")
-    hours = time_obj.hour + (12 if time_obj.strftime('%p') == 'AM' else 0)
-    new_time = time_obj.replace(hour=hours % 24)
+    time_obj = None
+    try: 
+        time_obj = datetime.strptime(time_str, "%Y-%m-%d %I:%M %p")
+        hours = time_obj.hour + (12 if time_obj.strftime('%p') == 'AM' else 0)
+        new_time = time_obj.replace(hour=hours % 24)
+    except:
+        new_time = datetime(2000, 1, 1)
     return new_time
 
 @csrf_exempt
