@@ -75,13 +75,22 @@ def profile(request):
     else:
         return render(request, "users/profile.html", {'page_obj': page_obj, 'selected_sort': sort_key, 'form': UploadFileForm})
 
-@csrf_exempt
 @require_http_methods(["POST"])
-def change_file_status(request):
-    submission_id = request.POST.get('submissionId')
+def change_file_status(request, submission_id):
     new_status = request.POST.get('newStatus')
-    note = request.POST.get('note')
+    note = request.POST.get('userNote')
+
+    if not submission_id:
+        return JsonResponse({'message': 'Submission ID is missing'}, status=400)
+    
+    if not new_status:
+        return JsonResponse({'message': 'status is missing'}, status=400)
+    
+    if not note:
+        return JsonResponse({'message': 'note is missing'}, status=400)
+
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+
     try:
         response = s3.list_objects_v2(Bucket='b29-whistleblower')
         if 'Contents' in response:
@@ -92,12 +101,11 @@ def change_file_status(request):
                 metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
                 metadata = metadata_response.get('Metadata', {})
                 if submission_id == metadata.get('submission_id', "Old Files"):
-                    print(note)
                     if metadata.get('status') == "Resolved":
                         continue
                     metadata['status'] = new_status
-                    metadata['note'] = note if note != None else metadata['note']
-                    
+                    metadata['note'] = note if note is not None else metadata.get('note', '')
+
                     s3.copy_object(
                         Bucket='b29-whistleblower', 
                         CopySource={'Bucket': 'b29-whistleblower', 'Key': file_key},
@@ -105,13 +113,15 @@ def change_file_status(request):
                         Metadata=metadata, 
                         MetadataDirective='REPLACE'
                     )
-                
+    
     except ClientError as e:
         error_code = e.response['Error']['Code']
         error_message = e.response['Error']['Message']
         print(f"Error code: {error_code}, Message: {error_message}")
         return JsonResponse({'message': 'Error updating status'}, status=500)
-    return JsonResponse({'message': 'Status updated successfully'})
+
+    return redirect('login')
+    
 
 def edit_submission(request, submission_id):
     if request.method == 'POST':
@@ -199,7 +209,43 @@ def delete_submission(request, submission_id):
             print(f"Error deleting submission: {error_message}")
             return JsonResponse({'message': f'Error deleting submission: {error_message}'}, status=500)
 
+# def resolve_submission(request, submission_id):
+#     if request.method == 'POST':
+#         title = request.POST.get('edit-title')
+#         description = request.POST.get('edit-description')
+#         tag = request.POST.get('edit-tag')
+        
+#         s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+#         try:
+#             response = s3.list_objects_v2(Bucket='b29-whistleblower')
+#             if 'Contents' in response:
+#                 for item in response['Contents']: 
+#                     file_key = item['Key']
+#                     if "uploads/" in file_key:
+#                         continue
+#                     metadata_response = s3.head_object(Bucket='b29-whistleblower', Key=file_key)
+#                     metadata = metadata_response.get('Metadata', {})
+#                     if submission_id == metadata.get('submission_id', "Old Files"):
+#                         # print(note)
+#                         metadata['title'] = title
+#                         metadata['description'] = description
+#                         metadata['tag'] = tag
+                        
+#                         s3.copy_object(
+#                             Bucket='b29-whistleblower', 
+#                             CopySource={'Bucket': 'b29-whistleblower', 'Key': file_key},
+#                             Key=file_key, 
+#                             Metadata=metadata, 
+#                             MetadataDirective='REPLACE'
+#                         )
 
+#             return redirect('login')
+        
+#         except Submission.DoesNotExist:
+#             return JsonResponse({'message': 'Submission does not exist'}, status=404)
+    
+#     else:
+#         return JsonResponse({'message': 'Invalid request method'}, status=400)
 
 def logout_view(request):
     logout(request)
