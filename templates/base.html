@@ -1,38 +1,13 @@
 {% load socialaccount %}
 {% load bootstrap5 %}
+{% load static %}
 
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css">
     <title>{% block title %}Welcome to the Bullying Whistleblower App{% endblock title %}</title>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-    <style>
-        .masthead-brand {
-            color: #212529;
-        }
-
-        .nav-link {
-            color: #212529;
-            padding-bottom: 0.5rem;
-            border-bottom: 3px solid transparent;
-        }
-
-        .nav-link:hover,
-        .nav-link:focus {
-            border-bottom-color: #0d6efd;
-        }
-
-        .nav-link.active {
-            border-bottom-color: #0d6efd;
-        }
-        body{
-            padding-bottom: 10vh;
-        }
-        .reportForm .required:after {
-            content:"*";
-            color:red;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 {% block header %}
 {% endblock header %}
@@ -105,6 +80,7 @@
         </body>
     </div>
 </div>
+
 {% block footer %}
 <footer class="text-center text-lg-start fixed-bottom" style = "z-index: 1030; background-color: #e0e0e0;">
     <div class="text-center p-3">
@@ -112,6 +88,7 @@
     </div>
   </footer>
 {% endblock footer %}
+
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content text-start rounded-4">
@@ -152,7 +129,7 @@
                         <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
-            </div>            
+            </div>
         </div>
     </div>
 </div>

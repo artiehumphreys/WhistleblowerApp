@@ -64,7 +64,6 @@ def file_upload_view(request):
 
         return redirect("/profile/")
 
-
 def list_files(request):
     files = UploadedFile.objects.all()
     return render(request, "users/templates/siteadmin.html", {'files': files})
