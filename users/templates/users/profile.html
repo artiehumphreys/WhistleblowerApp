@@ -158,9 +158,7 @@
                         {% endfor %}
                         <button type="button" class="btn btn-warning mx-2 my-2" 
                                     data-bs-toggle="modal" 
-                                    data-bs-target="#confirmEditModal-{{ submission_data.0 }}"
-                                    data-fileid="{{ submission_data.0 }}" 
-                                    data-title="{{ submission_data.1 }}">
+                                    data-bs-target="#confirmEditModal-{{ submission_data.0 }}">
                                     <i class="bi bi-pen"></i> Edit Submission
                                 </button>
                                 <div class="modal fade confirm-edit-modal" id="confirmEditModal-{{ submission_data.0 }}" tabindex="-1" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
@@ -194,11 +192,10 @@
                                                             <option value="Other" {% if 'tag' == 'Other' %}selected{% endif %}>Other</option>
                                                         </select>
                                                     </div>
-                                    
+                                                    <div class="modal-footer">
+                                                        <button type="submit" id="editButton-{{ submission_data.0 }}" class="btn btn-primary">Save Changes</button>
+                                                    </div>
                                                 </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" id="editButton-{{ submission_data.0 }}" class="btn btn-primary">Save Changes</button>
                                             </div>
                                         </div>
                                     </div>
@@ -219,9 +216,8 @@
                                                 Are you sure you want to delete this file?
                                                 <form id="delete-form-{{ submission_data.0 }}" class="mt-4" method="post" enctype="multipart/form-data" action="{% url 'delete_submission' submission_data.0 %}">
                                                     {% csrf_token %}
-                                                    <div class="modal-footer" style="justify-content: flex-start !important;">
-                                                        <button type="submit" id = "deleteButton-{{ submission_data.0 }}" class="btn btn-danger confirmDeleteButton">Delete Submission</button>
-                                                    </div>   
+                                                    <hr>
+                                                    <button type="submit" id = "deleteButton-{{ submission_data.0 }}" class="btn btn-danger confirmDeleteButton mt-2" style="justify-content: flex-start !important;">Delete Submission</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -301,7 +297,6 @@
             content.style.display = 'block';
         }
     }
-
 
     document.querySelectorAll('.confirm-delete-modal').forEach(modal => {
         let fileId = modal.dataset.bsFileId;
