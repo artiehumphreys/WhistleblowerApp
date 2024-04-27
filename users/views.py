@@ -116,7 +116,7 @@ def change_file_status(request):
         error_code = e.response['Error']['Code']
         error_message = e.response['Error']['Message']
         print(f"Error code: {error_code}, Message: {error_message}")
-        return JsonResponse({'message': 'Error updating status'}, status=500)
+        return render(request, 'login', {'any_error': error_message})
     return JsonResponse({'message': 'Status updated successfully'})
 
 def edit_submission(request, submission_id):
@@ -152,10 +152,10 @@ def edit_submission(request, submission_id):
             return redirect('login')
         
         except Submission.DoesNotExist:
-            return JsonResponse({'message': 'Submission does not exist'}, status=404)
+            return render(request, 'login', {'any_error': 'The provided submission does not exist.'})
     
     else:
-        return JsonResponse({'message': 'Invalid request method'}, status=400)
+        return render(request, 'login', {'any_error': 'Stale request. Please try again'})
 
 
 def delete_submission(request, submission_id):
@@ -202,8 +202,7 @@ def delete_submission(request, submission_id):
         
         except ClientError as e:
             error_message = e.response['Error']['Message']
-            print(f"Error deleting submission: {error_message}")
-            return JsonResponse({'message': f'Error deleting submission: {error_message}'}, status=500)
+            return render(request, 'login', {'any_error': error_message})
 
 
 
