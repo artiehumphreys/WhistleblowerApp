@@ -91,10 +91,10 @@ def change_file_status(request, submission_id):
     note = request.POST.get('userNote')
 
     if not submission_id:
-        return JsonResponse({'message': 'Submission ID is missing'}, status=400)
+        render(request, 'login', {'any_error': 'Submission ID is missing'})
     
     if not new_status:
-        return JsonResponse({'message': 'status is missing'}, status=400)
+        render(request, 'login', {'any_error': 'Status is missing'})
 
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
@@ -122,9 +122,7 @@ def change_file_status(request, submission_id):
                     )
     
     except ClientError as e:
-        error_code = e.response['Error']['Code']
         error_message = e.response['Error']['Message']
-        print(f"Error code: {error_code}, Message: {error_message}")
         return render(request, 'login', {'any_error': error_message})
 
     return redirect('login')
