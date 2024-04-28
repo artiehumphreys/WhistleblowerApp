@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+
+{% block title %}About{% endblock title %}
+
+{% block header %}
+
+{% endblock header %}
+
+{% block content %}
+
+<div class="container mt-2">
+    <div class="justify-content-between align-items-center">
+        <body class="bg-light">
+            <div class="cover-container d-flex h-50 p-3 mx-auto flex-column">
+                <header class="mb-5">
+                    <div class="container">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="masthead-brand mb-0">UVA Bullying Whistleblower App</h3>
+                            <nav class="nav nav-masthead justify-content-center">
+                                {% if user.is_authenticated %}
+                                <a class="nav-link" aria-current="page" href="{% url 'login' %}">View Profile</a>
+                                {% else %}
+                                <a class="nav-link" aria-current="page" href="{% url 'login_page' %}">Login</a>
+                                {% endif %}
+                                <a class="nav-link" aria-current="page" href="{% url 'index' %}">Home</a>
+                                <a class="nav-link active" href="{% url 'about' %}">About</a>
+                                <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                            </nav>
+                        </div>
+                    </div>
+                </header>
+                <main class="px-3">
+                    <h1 class="text-center">About Our App</h1>
+                    <p class="lead text-left">This app was developed as part of a semester-long project for CS 3240: Advanced Software Development Techniques, to create a whistleblower platform using the Django Web Framework, enhanced with Bootstrap. </p>
+                    <div class="row align-items-center mt-4">
+                        <div class="col-md-6 text-center">
+                            <img src="../../static/whistleblower_app/students_walking_up_to_rotunda_ss_header.jpg" alt="Students walking" style="width: 90%; height: auto; margin: 0 auto;">
+                            <p class="lead" style="font-size: smaller;">Photo Courtesy of <a href = "https://news.virginia.edu/content/uva-raises-outdoor-gathering-limit-grounds-25-effective-immediately" target="_blank">UVA Today</a></p>
+                        </div>                        
+                        <div class="col-md-6">
+                            <p class="lead">Recognizing that bullying is an under-discussed issue on grounds, we created the UVA Bullying Whistleblower App. During the development process, we kept different user types in mind, including the site admin, anonymous user, and a regular signed-in user.
+                                The project was completed over seven sprints using the Agile Scrum framework, culminating in Beta Testing and a Final Version.
+                            </p>
+                            <p class = "lead text-center">"This project was a blast, especially learning about the SDLC." - Artie Humphreys, Scrum Master</p>
+                            <p class="lead text-info">This app is not affiliated with the University of Virginia. </p>
+                        </div>
+                    </div>
+                </main>
+                
+            </div>
+        </body>
+    </div>
+</div>
+
+{% endblock content %}

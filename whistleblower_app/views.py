@@ -1,23 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
 from django.core.files.base import ContentFile
-from django.template import loader
 from .forms import UploadFileForm
 from .models import UploadedFile, Submission
 import boto3
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
 from django.contrib.auth import logout
-from users import templates
-import tempfile
-import os
-
+from django.contrib import messages
 
 
 def index(request):
-    if(request.user.is_authenticated):
-        return redirect("/profile/")
     return render(request, "whistleblower_app/index.html", {'form': UploadFileForm})
 
 def file_upload_view(request):
@@ -56,19 +47,21 @@ def file_upload_view(request):
                         'title': uploaded_file.title,
                         'username': username,
                         'description': uploaded_file.description,
-                        'status': 'new',
+                        'status': 'New',
                         'note': '',
                         'submission_id': str(submission.id),
-                        'tag': uploaded_file.tag
+                        'tag': uploaded_file.tag,
+                        'time': uploaded_file.uploaded_at.strftime("%Y-%m-%d %I:%M %p")
                     }
                 }
                 file_name = f"{submission.id}_{file.name}"
                 s3.upload_fileobj(file.file, 'b29-whistleblower', file_name, ExtraArgs=extra_args)
-
+        else:
+            return render(request, 'base.html', {'upload_error', 'There Was an Error Uploading Your Report. Please Refresh and Try Again.'})
         if username == 'Anonymous':
-            return redirect('index')
-
-        return redirect("/profile/")
+            return render(request, 'base.html', {'any_success': 'File Uploaded Successfully'})
+        messages.success(request, 'File Uploaded Successfully')
+        return redirect('/profile/')
 
 
 def list_files(request):
@@ -78,3 +71,9 @@ def list_files(request):
 def logout_view(request):
     logout(request)
     return redirect("/whistleblower/")
+
+def about(request):
+    return render(request, 'whistleblower_app/about.html')
+
+def contact(request):
+    return render(request, 'whistleblower_app/contact.html')

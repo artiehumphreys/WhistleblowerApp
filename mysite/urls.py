@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from whistleblower_app import views
 
 urlpatterns = [
     path('whistleblower/', include('whistleblower_app.urls'), name = "whistleblower"),
@@ -23,5 +24,5 @@ urlpatterns = [
     path('login/', include('auth_app.urls'), name = "auth"),
     path("admin/", admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path("", include("whistleblower_app.urls"))
+    path("", include("whistleblower_app.urls")),
 ]
