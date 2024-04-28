@@ -91,10 +91,10 @@ def change_file_status(request, submission_id):
     note = request.POST.get('userNote')
 
     if not submission_id:
-        render(request, 'login', {'any_error': 'Submission ID is missing'})
+        render(request, 'users/siteadmin.html', {'any_error': 'Submission ID is missing'})
     
     if not new_status:
-        render(request, 'login', {'any_error': 'Status is missing'})
+        render(request, 'users/siteadmin.html', {'any_error': 'Status is missing'})
 
     s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
 
@@ -157,14 +157,14 @@ def edit_submission(request, submission_id):
                             Metadata=metadata, 
                             MetadataDirective='REPLACE'
                         )
-
+            
             return redirect('login')
         
         except Submission.DoesNotExist:
-            return render(request, 'login', {'any_error': 'The provided submission does not exist.'})
+            return render(request, 'users/templates/profile.html', {'any_error': 'The provided submission does not exist.'})
     
     else:
-        return render(request, 'login', {'any_error': 'Stale request. Please try again'})
+        return render(request, 'users/templates/profile.html', {'any_error': 'Stale request. Please try again'})
 
 
 def delete_submission(request, submission_id):

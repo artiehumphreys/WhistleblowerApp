@@ -5,7 +5,7 @@ from .models import UploadedFile, Submission
 import boto3
 from django.conf import settings
 from django.contrib.auth import logout
-
+from django.contrib import messages
 
 
 def index(request):
@@ -57,12 +57,12 @@ def file_upload_view(request):
                 file_name = f"{submission.id}_{file.name}"
                 s3.upload_fileobj(file.file, 'b29-whistleblower', file_name, ExtraArgs=extra_args)
         else:
-            return render(request, 'index', {'upload_error', 'There Was an Error Uploading Your Report. Please Refresh and Try Again.'})
-
+            return render(request, 'base.html', {'upload_error', 'There Was an Error Uploading Your Report. Please Refresh and Try Again.'})
         if username == 'Anonymous':
-            return redirect('index')
+            return render(request, 'base.html', {'any_success': 'File Uploaded Successfully'})
+        messages.success(request, 'File Uploaded Successfully')
+        return redirect('/profile/')
 
-        return redirect("/profile/")
 
 def list_files(request):
     files = UploadedFile.objects.all()

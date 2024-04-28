@@ -39,6 +39,9 @@
                 <p class = "text-center text-danger">An error occured whilst processing your request. Please refresh the page and try again.</p>
                 <p class = "text-center text-danger">Error: {{ any_error }}</p>
             {% endif %}
+            {% if any_success %}
+                <p class = "text-center text-success">{{ any_error }}</p>
+            {% endif %}
             {% if page_obj %}
             <div class="my-3 p-3 bg-white rounded box-shadow">
                 <h3 class="border-bottom border-gray pb-2 mb-0">Your Previous Reports</h3>

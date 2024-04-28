@@ -38,6 +38,9 @@
                     <span = "text-danger">{{ upload_error }}</span>
                 <div class = "text-center bg-light">  
                 {% endif %} 
+                {% if any_success %}
+                <p class = "text-center text-success">{{ any_success }}</p>
+                {% endif %}
                 <div class = "section">
                     <main class = "section" role="main" class="px-3">
                         <h1 class="cover-heading mb-3">Report Instances of Bullying Across Grounds</h1>
